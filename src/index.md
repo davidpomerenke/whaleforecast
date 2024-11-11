@@ -31,7 +31,7 @@ const value = Generators.observe(notify => {
   const slider = $('#slider')
   slider.slider({
     range: true,
-    min: new Date('2023-01-01').getTime(),
+    min: new Date('2020-01-01').getTime(),
     max: endDate.getTime(),
     values: [new Date('2024-01-01').getTime(), endDate.getTime()],
     slide: (event, ui) => {
@@ -102,10 +102,10 @@ function rallyTimeline(data, { width, start, end } = {}) {
   const interval = getTimeInterval(start, end)
 
   return Plot.plot({
-    title: '🎯 Campaign Rally Activity',
+    title: '🎯 Campaign Rally Attendance',
     subtitle: `${
       interval.charAt(0).toUpperCase() + interval.slice(1)
-    }ly distribution of political party rallies`,
+    }ly total attendees at political party rallies`,
     width,
     height: 300,
     style: {
@@ -115,7 +115,7 @@ function rallyTimeline(data, { width, start, end } = {}) {
     },
     y: {
       grid: true,
-      label: 'Number of Campaign Rallies',
+      label: 'Number of Attendees',
       labelOffset: 45
     },
     x: {
@@ -127,9 +127,10 @@ function rallyTimeline(data, { width, start, end } = {}) {
       Plot.rectY(
         filteredData,
         Plot.binX(
-          { y: 'count' },
+          { y: 'sum' },
           {
             x: 'date',
+            y: 'size',
             fill: d => d.organizers_canonical[0],
             interval: interval,
             tip: true

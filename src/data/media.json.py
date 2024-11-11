@@ -5,6 +5,7 @@ import mediacloud.api
 
 from util import cache
 from parties import party_search_terms
+from tqdm import tqdm
 
 # Initialize MediaCloud API
 MEDIACLOUD_API_TOKEN = os.getenv("MEDIACLOUD_API_TOKEN")
@@ -23,7 +24,7 @@ def get_mediacloud_party_counts(start_date: date, end_date: date) -> pd.DataFram
 
     all_counts = {}
 
-    for party, terms in party_search_terms.items():
+    for party, terms in tqdm(party_search_terms.items()):
         # Build search query
         search_terms = [party] + terms
         query = " OR ".join(f'"{term}"' for term in search_terms)
@@ -82,5 +83,5 @@ def _resolve_country(country: str) -> list[int]:
 
 
 if __name__ == "__main__":
-    df = get_mediacloud_party_counts(start_date=date(2023, 1, 1), end_date=date.today())
+    df = get_mediacloud_party_counts(start_date=date(2020, 1, 1), end_date=date.today())
     print(df.to_json(orient="records"))
