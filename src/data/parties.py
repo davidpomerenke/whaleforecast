@@ -19,7 +19,7 @@ party_search_terms = {
     # "Die Heimat": [],
     "Die PARTEI": [],
     # "Die Urbane": [],
-    "Freie Wähler": [],
+    # "Freie Wähler": [],
     # "Gartenpartei": [],
     # "Gesundheitsforschung": [],
     # "Gleichheitspartei": [],

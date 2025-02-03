@@ -1,0 +1,8 @@
+python-dotenv
+joblib
+requests
+pandas
+tqdm
+mediacloud
+typing-extensions
+number_parser
