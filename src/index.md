@@ -6,13 +6,15 @@ head: <link rel="icon"
   href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22black%22>🐳</text></svg>">
 ---
 
-# 🐳💥 Wahlkampfmonitor
+# Walkampfmonitor 🐳💥
 
 <!-- Load and transform the data -->
 
 ```js
 const rallies = FileAttachment('data/rallies.json').json()
 const media = FileAttachment('data/media.json').json()
+const tiktok = FileAttachment('data/tiktok.json').json()
+const polls = FileAttachment('data/polls.json').json()
 ```
 
 <link rel="stylesheet" href="npm:jquery-ui/dist/themes/base/jquery-ui.css">
@@ -116,7 +118,8 @@ function rallyTimeline(data, { width, start, end } = {}) {
     y: {
       grid: true,
       label: 'Number of Attendees',
-      labelOffset: 45
+      labelOffset: 45,
+      tickFormat: d => `${d / 1000}k`
     },
     x: {
       label: '→ Time',
@@ -137,7 +140,7 @@ function rallyTimeline(data, { width, start, end } = {}) {
           }
         )
       ),
-      Plot.ruleY([0])
+      Plot.ruleY([0]),
     ]
   })
 }
@@ -198,20 +201,135 @@ function mediaTimeline(data, { width, start, end } = {}) {
           }
         )
       ),
-      Plot.ruleY([0])
+      Plot.ruleY([0]),
+      Plot.crosshairX(filteredData, {x: "date"})
+    ]
+  })
+}
+
+function tiktokTimeline(data, { width, start, end } = {}) {
+  const filteredData = data
+    .filter(d => {
+      const date = new Date(d.date)
+      return date >= start && date <= end
+    })
+    .map(d => {
+      return Object.entries(d)
+        .filter(([key]) => key !== 'date')
+        .map(([party, count]) => ({
+          date: new Date(d.date),
+          party,
+          count
+        }))
+    })
+    .flat()
+
+  const interval = getTimeInterval(start, end)
+
+  return Plot.plot({
+    title: '📱 TikTok Activity',
+    subtitle: `${
+      interval.charAt(0).toUpperCase() + interval.slice(1)
+    }ly total views of videos posted by or mentioning political parties on TikTok`,
+    width,
+    height: 300,
+    style: {
+      background: 'transparent',
+      fontSize: 12,
+      color: '#2c3e50'
+    },
+    y: {
+      grid: true,
+      label: 'Number of Views',
+      labelOffset: 45,
+      tickFormat: d => `${d / 1000000}M`
+    },
+    x: {
+      label: '→ Time',
+      labelOffset: 35
+    },
+    color: { ...color, legend: true },
+    marks: [
+      Plot.lineY(
+        filteredData,
+        Plot.binX(
+          { y: 'sum' },
+          {
+            x: 'date',
+            y: 'count',
+            stroke: 'party',
+            interval: interval,
+            tip: true,
+            curve: 'basis'
+          },
+        ),
+      ),
+      Plot.ruleY([0]),
+      Plot.crosshairX(filteredData, {x: "date"})
+    ]
+  })
+}
+
+function pollsTimeline(data, { width, start, end } = {}) {
+  const filteredData = data.filter(d => {
+      const date = new Date(d.date)
+      return date >= start && date <= end
+    }).map(row => ({...row, date: new Date(row.date)}))
+  console.log(filteredData)
+  
+  const interval = getTimeInterval(start, end)
+
+  const ma = Plot.windowY({k: 14, anchor: "end", reduce: "mean"}, {x: "date", y: "value", stroke: "party", tip: true})
+
+  return Plot.plot({
+    title: '🗳️ Polling',
+    subtitle: "14-day moving average of German federal election polls, with individual poll results shown as dots",
+    width,
+    height: 300,
+    style: {
+      background: 'transparent',
+      fontSize: 12,
+      color: '#2c3e50'
+    },
+    y: {
+      grid: true,
+      label: '%',
+      labelOffset: 45
+    },
+    x: {
+      label: '→ Time',
+      labelOffset: 35
+    },
+    color: { ...color, legend: true },
+    marks: [
+      Plot.dot(filteredData, {x: "date", y: "value", stroke: "party", fill: "party", r: 1}),
+      Plot.lineY(filteredData, ma),
+      Plot.ruleY([5], { strokeWidth: 5, stroke: "grey", strokeOpacity: 0.5}),
+      Plot.ruleY([0]),
+      Plot.crosshairX(filteredData, ma)
     ]
   })
 }
 ```
 
-<div class="grid grid-cols-1 gap-4">
+<div class="grid">
   <div class="card">
     ${resize((width) => rallyTimeline(rallies, {width, start, end}))}
-    <p class="text-sm text-gray-500 mt-2">Data source: <a href="https://acleddata.com" class="underline">Armed Conflict Location & Event Data Project (ACLED)</a></p>
+    <p>Data source: <a href="https://acleddata.com">Armed Conflict Location & Event Data Project (ACLED)</a></p>
   </div>
   
   <div class="card">
     ${resize((width) => mediaTimeline(media, {width, start, end}))}
-    <p class="text-sm text-gray-500 mt-2">Data source: <a href="https://mediacloud.org" class="underline">Media Cloud</a></p>
+    <p>Data source: <a href="https://mediacloud.org">Media Cloud</a></p>
+  </div>
+
+  <div class="card">
+    ${resize((width) => tiktokTimeline(tiktok, {width, start, end}))}
+    <p>Data source: <a href="https://github.com/davidteather/TikTok-Api">TikTok</a></p>
+  </div>
+
+  <div class="card">
+    ${resize((width) => pollsTimeline(polls, {width, start, end}))}
+    <p>Data source: <a href="https://www.wahlrecht.de/umfragen/">Wahlrecht.de</a>, <a href="https://www.zeit.de/politik/deutschland/umfragen-bundestagswahl-neuwahl-wahltrend">ZEIT Online</a></p>
   </div>
 </div>

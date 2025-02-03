@@ -29,14 +29,11 @@ def get_mediacloud_party_counts(start_date: date, end_date: date) -> pd.DataFram
         search_terms = [party] + terms
         query = " OR ".join(f'"{term}"' for term in search_terms)
 
-        # Get collection ID for Germany
-        collection_ids = _resolve_country("Germany")
-
         counts = _story_count_over_time(
             query=query,
             start_date=start_date,
             end_date=end_date,
-            collection_ids=collection_ids,
+            collection_ids=["262985213"], # Germany, fast MIM version
             platform="onlinenews-mediacloud",
         )
         df = pd.DataFrame(counts)
@@ -65,21 +62,6 @@ def get_mediacloud_party_counts(start_date: date, end_date: date) -> pd.DataFram
         return result
 
     return pd.DataFrame()  # Return empty DataFrame if no data
-
-
-@cache
-def _resolve_country(country: str) -> list[int]:
-    """Get MediaCloud collection IDs for a country."""
-    # get national newspapers
-    results = directory.collection_list(name=f"{country} - national")["results"]
-    # ignore research collections
-    results = [r for r in results if "(Research Only)" not in r["name"]]
-    # if there is a specific collection for MIM, use it!
-    if any("Media Impact Monitor" in r["name"] for r in results):
-        results = [r for r in results if "Media Impact Monitor" in r["name"]]
-    if len(results) != 1:
-        print(f"Expected 1 result, got {len(results)} for {country}")
-    return [results[0]["id"]]
 
 
 if __name__ == "__main__":
