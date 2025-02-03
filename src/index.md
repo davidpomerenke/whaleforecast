@@ -13,31 +13,82 @@ head: <link rel="icon"
   <p class="description">A real-time dashboard tracking German political parties' campaign activities, media presence, and polling data.</p>
 </div>
 
-<link rel="stylesheet" href="npm:jquery-ui/dist/themes/base/jquery-ui.css">
-
-```js
-const $ = (self.jQuery = (
-  await import('npm:jquery/dist/jquery.js/+esm')
-).default)
-await import('npm:jquery-ui/dist/jquery-ui.js/+esm')
-```
+<div class="time-range">
+  <div id="slider-container">
+    <div class="slider-track-bg"></div>
+    <div class="slider-track"></div>
+    <input type="range" id="start-date" min="1577836800000" max="1735689600000" step="86400000">
+    <input type="range" id="end-date" min="1577836800000" max="1735689600000" step="86400000">
+  </div>
+  <div class="date-labels">
+    <div class="date-label">From: <span id="start-label"></span></div>
+    <div class="date-label">To: <span id="end-label"></span></div>
+  </div>
+</div>
 
 ```js
 const endDate = new Date()
+const startDate = new Date('2020-01-01')
+const maxDate = new Date('2024-12-31')
 
 const value = Generators.observe(notify => {
-  const slider = $('#slider')
-  slider.slider({
-    range: true,
-    min: new Date('2020-01-01').getTime(),
-    max: endDate.getTime(),
-    values: [new Date('2024-01-01').getTime(), endDate.getTime()],
-    slide: (event, ui) => {
-      notify(ui.values.map(timestamp => new Date(timestamp)))
+  const startInput = document.getElementById('start-date')
+  const endInput = document.getElementById('end-date')
+  const startLabel = document.getElementById('start-label')
+  const endLabel = document.getElementById('end-label')
+  const sliderTrack = document.querySelector('.slider-track')
+  
+  // Initialize values
+  startInput.value = new Date('2024-01-01').getTime()
+  endInput.value = endDate.getTime()
+  
+  function updateTrack() {
+    const start = Number(startInput.value)
+    const end = Number(endInput.value)
+    const range = endDate.getTime() - startDate.getTime()
+    const startPercent = ((start - startDate.getTime()) / range) * 100
+    const endPercent = ((end - startDate.getTime()) / range) * 100
+    
+    sliderTrack.style.left = `${startPercent}%`
+    sliderTrack.style.width = `${endPercent - startPercent}%`
+  }
+  
+  function updateLabels() {
+    startLabel.textContent = formatDate(new Date(Number(startInput.value)))
+    endLabel.textContent = formatDate(new Date(Number(endInput.value)))
+  }
+  
+  function notifyChange() {
+    notify([
+      new Date(Number(startInput.value)),
+      new Date(Number(endInput.value))
+    ])
+  }
+  
+  startInput.addEventListener('input', () => {
+    if (Number(startInput.value) > Number(endInput.value)) {
+      startInput.value = endInput.value
     }
+    updateTrack()
+    updateLabels()
+    notifyChange()
   })
-  notify(slider.slider('values').map(timestamp => new Date(timestamp))) // report initial dates
+  
+  endInput.addEventListener('input', () => {
+    if (Number(endInput.value) < Number(startInput.value)) {
+      endInput.value = startInput.value
+    }
+    updateTrack()
+    updateLabels()
+    notifyChange()
+  })
+  
+  // Initial setup
+  updateTrack()
+  updateLabels()
+  notifyChange()
 })
+
 const formatDate = d3.timeFormat('%B %d, %Y')
 ```
 
@@ -179,7 +230,7 @@ function rallyTimeline(data, { width, start, end } = {}) {
     },
     x: {
       ...axisStyle,
-      label: '→ Time',
+      label: null,
       labelOffset: 35
     },
     color: { ...color, legend: true },
@@ -241,7 +292,7 @@ function mediaTimeline(data, { width, start, end } = {}) {
     },
     x: {
       ...axisStyle,
-      label: '→ Time',
+      label: null,
       labelOffset: 35
     },
     color: { ...color, legend: true },
@@ -309,7 +360,7 @@ function tiktokTimeline(data, { width, start, end } = {}) {
     },
     x: {
       ...axisStyle,
-      label: '→ Time',
+      label: null,
       labelOffset: 35
     },
     color: { ...color, legend: true },
@@ -369,7 +420,7 @@ function pollsTimeline(data, { width, start, end } = {}) {
     },
     x: {
       ...axisStyle,
-      label: '→ Time',
+      label: null,
       labelOffset: 35
     },
     color: { ...color, legend: true },
