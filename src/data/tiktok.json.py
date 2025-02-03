@@ -185,7 +185,7 @@ def get_tiktok_party_counts(
     for party, terms in tqdm(party_search_terms.items()):
         video_ts = get_video_history_for_hashtag(
             hashtag=party.replace(" ", ""),
-            n=10,  # Adjust these numbers as needed (up to 1000(?))
+            n=50,  # Adjust these numbers as needed (up to 1000(?))
             verbose=verbose,
         )
         all_counts[party] = video_ts["views"]
