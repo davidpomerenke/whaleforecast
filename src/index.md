@@ -17,8 +17,8 @@ head: <link rel="icon"
   <div id="slider-container">
     <div class="slider-track-bg"></div>
     <div class="slider-track"></div>
-    <input type="range" id="start-date" min="1577836800000" max="1735689600000" step="86400000">
-    <input type="range" id="end-date" min="1577836800000" max="1735689600000" step="86400000">
+    <input type="range" id="start-date">
+    <input type="range" id="end-date">
   </div>
   <div class="date-labels">
     <div class="date-label">From: <span id="start-label"></span></div>
@@ -29,7 +29,6 @@ head: <link rel="icon"
 ```js
 const endDate = new Date()
 const startDate = new Date('2020-01-01')
-const maxDate = new Date('2024-12-31')
 
 const value = Generators.observe(notify => {
   const startInput = document.getElementById('start-date')
@@ -37,6 +36,15 @@ const value = Generators.observe(notify => {
   const startLabel = document.getElementById('start-label')
   const endLabel = document.getElementById('end-label')
   const sliderTrack = document.querySelector('.slider-track')
+  
+  // Set min/max values from JavaScript variables
+  startInput.min = startDate.getTime()
+  startInput.max = endDate.getTime()
+  startInput.step = 86400000 // one day in milliseconds
+  
+  endInput.min = startDate.getTime()
+  endInput.max = endDate.getTime()
+  endInput.step = 86400000
   
   // Initialize values
   startInput.value = new Date('2024-01-01').getTime()
@@ -94,7 +102,6 @@ const formatDate = d3.timeFormat('%B %d, %Y')
 
 ```js
 const [start, end] = value
-display(html`Date range: ${formatDate(start)} → ${formatDate(end)}`)
 ```
 
 <div id="slider"></div>
