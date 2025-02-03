@@ -2,17 +2,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="generator" content="Observable Framework v1.12.0">
-<title>Wahlkampfmonitor</title>
+<title>Walkampfmonitor</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
 <link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
-<link rel="modulepreload" href="./_observablehq/client.fbe4f530.js">
+<link rel="modulepreload" href="./_observablehq/client.ef45e1cc.js">
 <link rel="modulepreload" href="./_observablehq/runtime.a36cbfb4.js">
 <link rel="modulepreload" href="./_observablehq/stdlib.4c44a5c1.js">
 <link rel="modulepreload" href="./_npm/d3@7.9.0/159192fa.js">
-<link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
 <link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/b7d4b5b4.js">
 <link rel="modulepreload" href="./_npm/d3-array@3.2.4/37839b6a.js">
 <link rel="modulepreload" href="./_npm/d3-axis@3.0.0/bd0afa17.js">
@@ -50,21 +49,20 @@
 <link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
 <link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
 <link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%22.9em%22%20font-size=%2290%22%20fill=%22black%22%3E%F0%9F%90%B3%3C/text%3E%3C/svg%3E"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"> <link rel="stylesheet" href="./_file/styles.7e1656cf.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%22.9em%22%20font-size=%2290%22%20fill=%22black%22%3E%F0%9F%90%B3%3C/text%3E%3C/svg%3E"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"> <link rel="stylesheet" href="./_file/styles.30534236.css">
 <script type="module">
 
-import {define} from "./_observablehq/client.fbe4f530.js";
+import {define} from "./_observablehq/client.ef45e1cc.js";
 import {registerFile} from "./_observablehq/stdlib.4c44a5c1.js";
 
-registerFile("./data/media.json", {"name":"./data/media.json","mimeType":"application/json","path":"./_file/data/media.712e1a1a.json","lastModified":1738625156534,"size":396794});
-registerFile("./data/polls.json", {"name":"./data/polls.json","mimeType":"application/json","path":"./_file/data/polls.4bc1a44c.json","lastModified":1738625178678,"size":1628336});
-registerFile("./data/rallies.json", {"name":"./data/rallies.json","mimeType":"application/json","path":"./_file/data/rallies.e94c9e22.json","lastModified":1738625134010,"size":1259534});
-registerFile("./data/tiktok.json", {"name":"./data/tiktok.json","mimeType":"application/json","path":"./_file/data/tiktok.f18914c2.json","lastModified":1738625177905,"size":366638});
+registerFile("./data/media.json", {"name":"./data/media.json","mimeType":"application/json","path":"./_file/data/media.712e1a1a.json","lastModified":1738626257393,"size":396794});
+registerFile("./data/polls.json", {"name":"./data/polls.json","mimeType":"application/json","path":"./_file/data/polls.4bc1a44c.json","lastModified":1738626289758,"size":1628336});
+registerFile("./data/rallies.json", {"name":"./data/rallies.json","mimeType":"application/json","path":"./_file/data/rallies.0fde05b5.json","lastModified":1738626236986,"size":1259534});
+registerFile("./data/tiktok.json", {"name":"./data/tiktok.json","mimeType":"application/json","path":"./_file/data/tiktok.a2f00e36.json","lastModified":1738626289194,"size":368093});
 
-define({id: "4f536e00", inputs: ["Generators","d3"], outputs: ["endDate","startDate","maxDate","value","formatDate"], body: (Generators,d3) => {
+define({id: "139bb3bf", inputs: ["Generators","d3"], outputs: ["endDate","startDate","value","formatDate"], body: (Generators,d3) => {
 const endDate = new Date()
 const startDate = new Date('2020-01-01')
-const maxDate = new Date('2024-12-31')
 
 const value = Generators.observe(notify => {
   const startInput = document.getElementById('start-date')
@@ -72,6 +70,15 @@ const value = Generators.observe(notify => {
   const startLabel = document.getElementById('start-label')
   const endLabel = document.getElementById('end-label')
   const sliderTrack = document.querySelector('.slider-track')
+  
+  // Set min/max values from JavaScript variables
+  startInput.min = startDate.getTime()
+  startInput.max = endDate.getTime()
+  startInput.step = 86400000 // one day in milliseconds
+  
+  endInput.min = startDate.getTime()
+  endInput.max = endDate.getTime()
+  endInput.step = 86400000
   
   // Initialize values
   startInput.value = new Date('2024-01-01').getTime()
@@ -125,12 +132,11 @@ const value = Generators.observe(notify => {
 })
 
 const formatDate = d3.timeFormat('%B %d, %Y')
-return {endDate,startDate,maxDate,value,formatDate};
+return {endDate,startDate,value,formatDate};
 }});
 
-define({id: "9eb0c12a", inputs: ["value","display","html","formatDate"], outputs: ["start","end"], body: (value,display,html,formatDate) => {
+define({id: "b6d97ee8", inputs: ["value"], outputs: ["start","end"], body: (value) => {
 const [start, end] = value
-display(html`Date range: ${formatDate(start)} → ${formatDate(end)}`)
 return {start,end};
 }});
 
@@ -474,23 +480,23 @@ return {getTimeInterval,plotStyle,axisStyle,rallyTimeline,mediaTimeline,tiktokTi
 <div id="observablehq-center">
 <main id="observablehq-main" class="observablehq">
 <div class="header">
-  <h1>Wahlkampfmonitor 🐳💥</h1>
+  <h1>Walkampfmonitor 🐳</h1>
   <p class="description">A real-time dashboard tracking German political parties' campaign activities, media presence, and polling data.</p>
 </div>
 <div class="time-range">
   <div id="slider-container">
     <div class="slider-track-bg"></div>
     <div class="slider-track"></div>
-    <input type="range" id="start-date" min="1577836800000" max="1735689600000" step="86400000">
-    <input type="range" id="end-date" min="1577836800000" max="1735689600000" step="86400000">
+    <input type="range" id="start-date">
+    <input type="range" id="end-date">
   </div>
   <div class="date-labels">
     <div class="date-label">From: <span id="start-label"></span></div>
     <div class="date-label">To: <span id="end-label"></span></div>
   </div>
 </div>
-<div class="observablehq observablehq--block"><!--:4f536e00:--></div>
-<div class="observablehq observablehq--block"><!--:9eb0c12a:--></div>
+<div class="observablehq observablehq--block"><!--:139bb3bf:--></div>
+<div class="observablehq observablehq--block"><!--:b6d97ee8:--></div>
 <div id="slider"></div>
 <div class="grid">
   <div class="card">
@@ -537,6 +543,6 @@ return {getTimeInterval,plotStyle,axisStyle,rallyTimeline,mediaTimeline,tiktokTi
 <div class="observablehq observablehq--block"><!--:1daa46aa:--></div>
 </main>
 <footer id="observablehq-footer">
-<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2025-02-03T23:25:22">Feb 3, 2025</a>.</div>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2025-02-03T23:43:44">Feb 3, 2025</a>.</div>
 </footer>
 </div>
