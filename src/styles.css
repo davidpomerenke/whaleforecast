@@ -1,0 +1,125 @@
+:root {
+  --background-color: #f8fafc;
+  --text-color: #1e293b;
+  --card-background: white;
+  --accent-color: #0ea5e9;
+  --grid-gap: 1.5rem;
+  --card-padding: 1.5rem;
+  --border-radius: 12px;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--text-color);
+}
+
+.grid {
+  display: grid;
+  gap: var(--grid-gap);
+  padding: var(--grid-gap);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 600px), 1fr));
+}
+
+.card {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: var(--card-padding);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease-in-out;
+}
+
+#slider {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.ui-slider .ui-slider-range {
+  background: var(--accent-color);
+}
+
+.ui-slider .ui-slider-handle {
+  border-radius: 50%;
+  border: 2px solid var(--accent-color);
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+  color: #0284c7;
+}
+
+p {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.header {
+  padding: 2rem var(--grid-gap);
+  max-width: 800px;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: #64748b;
+  margin-top: -1rem;
+}
+
+.chart {
+  margin-bottom: 0.5rem;
+}
+
+.source {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-align: right;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.source a {
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.source a:hover {
+  color: var(--accent-color);
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .description {
+    font-size: 1rem;
+  }
+  
+  .grid {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+} 
