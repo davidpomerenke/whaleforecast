@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.12.0">
+<title>Wahlkampfmonitor</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="modulepreload" href="./_observablehq/client.ca7aca8b.js">
+<link rel="modulepreload" href="./_observablehq/runtime.a36cbfb4.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.4c44a5c1.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.16/239523e7.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/84d7b8e9.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/2c0cdfa2.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/626bedc4.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/00c41b5d.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/b5f7cdc6.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/b22c5864.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/6f15f633.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/ef1ec490.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e1ff060.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/5851d7ef.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/dcd02767.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/f1db2593.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/034b7bcb.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/4bb53638.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/bbafde58.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/aa5b35a8.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/32c7fec2.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/567840a0.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/cf9b720b.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/5dcd62f4.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/f8e03c56.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/5bc129e1.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/19c92b44.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%22.9em%22%20font-size=%2290%22%20fill=%22black%22%3E%F0%9F%90%B3%3C/text%3E%3C/svg%3E"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"> <link rel="stylesheet" href="./_file/styles.7e1656cf.css">
+<script type="module">
+
+import {define} from "./_observablehq/client.ca7aca8b.js";
+import {registerFile} from "./_observablehq/stdlib.4c44a5c1.js";
+
+registerFile("./data/media.json", {"name":"./data/media.json","mimeType":"application/json","path":"./_file/data/media.17e883db.json","lastModified":1738624148409,"size":118349});
+registerFile("./data/polls.json", {"name":"./data/polls.json","mimeType":"application/json","path":"./_file/data/polls.4bc1a44c.json","lastModified":1738624240500,"size":1628336});
+registerFile("./data/rallies.json", {"name":"./data/rallies.json","mimeType":"application/json","path":"./_file/data/rallies.4b39def5.json","lastModified":1738624143746,"size":576714});
+registerFile("./data/tiktok.json", {"name":"./data/tiktok.json","mimeType":"application/json","path":"./_file/data/tiktok.30612c14.json","lastModified":1738624239888,"size":109334});
+
+define({id: "4f536e00", inputs: ["Generators","d3"], outputs: ["endDate","startDate","maxDate","value","formatDate"], body: (Generators,d3) => {
+const endDate = new Date()
+const startDate = new Date('2020-01-01')
+const maxDate = new Date('2024-12-31')
+
+const value = Generators.observe(notify => {
+  const startInput = document.getElementById('start-date')
+  const endInput = document.getElementById('end-date')
+  const startLabel = document.getElementById('start-label')
+  const endLabel = document.getElementById('end-label')
+  const sliderTrack = document.querySelector('.slider-track')
+  
+  // Initialize values
+  startInput.value = new Date('2024-01-01').getTime()
+  endInput.value = endDate.getTime()
+  
+  function updateTrack() {
+    const start = Number(startInput.value)
+    const end = Number(endInput.value)
+    const range = endDate.getTime() - startDate.getTime()
+    const startPercent = ((start - startDate.getTime()) / range) * 100
+    const endPercent = ((end - startDate.getTime()) / range) * 100
+    
+    sliderTrack.style.left = `${startPercent}%`
+    sliderTrack.style.width = `${endPercent - startPercent}%`
+  }
+  
+  function updateLabels() {
+    startLabel.textContent = formatDate(new Date(Number(startInput.value)))
+    endLabel.textContent = formatDate(new Date(Number(endInput.value)))
+  }
+  
+  function notifyChange() {
+    notify([
+      new Date(Number(startInput.value)),
+      new Date(Number(endInput.value))
+    ])
+  }
+  
+  startInput.addEventListener('input', () => {
+    if (Number(startInput.value) > Number(endInput.value)) {
+      startInput.value = endInput.value
+    }
+    updateTrack()
+    updateLabels()
+    notifyChange()
+  })
+  
+  endInput.addEventListener('input', () => {
+    if (Number(endInput.value) < Number(startInput.value)) {
+      endInput.value = startInput.value
+    }
+    updateTrack()
+    updateLabels()
+    notifyChange()
+  })
+  
+  // Initial setup
+  updateTrack()
+  updateLabels()
+  notifyChange()
+})
+
+const formatDate = d3.timeFormat('%B %d, %Y')
+return {endDate,startDate,maxDate,value,formatDate};
+}});
+
+define({id: "9eb0c12a", inputs: ["value","display","html","formatDate"], outputs: ["start","end"], body: (value,display,html,formatDate) => {
+const [start, end] = value
+display(html`Date range: ${formatDate(start)} → ${formatDate(end)}`)
+return {start,end};
+}});
+
+define({id: "0dd833bc", mode: "inline", inputs: ["resize","rallyTimeline","rallies","start","end","display"], body: async (resize,rallyTimeline,rallies,start,end,display) => {
+display(await(
+resize((width) => rallyTimeline(rallies, {width, start, end}))
+))
+}});
+
+define({id: "32438f4a", mode: "inline", inputs: ["resize","mediaTimeline","media","start","end","display"], body: async (resize,mediaTimeline,media,start,end,display) => {
+display(await(
+resize((width) => mediaTimeline(media, {width, start, end}))
+))
+}});
+
+define({id: "2d27a17e", mode: "inline", inputs: ["resize","tiktokTimeline","tiktok","start","end","display"], body: async (resize,tiktokTimeline,tiktok,start,end,display) => {
+display(await(
+resize((width) => tiktokTimeline(tiktok, {width, start, end}))
+))
+}});
+
+define({id: "430956ee", mode: "inline", inputs: ["resize","pollsTimeline","polls","start","end","display"], body: async (resize,pollsTimeline,polls,start,end,display) => {
+display(await(
+resize((width) => pollsTimeline(polls, {width, start, end}))
+))
+}});
+
+define({id: "0900d8e0", inputs: ["FileAttachment"], outputs: ["rallies","media","tiktok","polls"], body: (FileAttachment) => {
+const rallies = FileAttachment("./data/rallies.json").json()
+const media = FileAttachment("./data/media.json").json()
+const tiktok = FileAttachment("./data/tiktok.json").json()
+const polls = FileAttachment("./data/polls.json").json()
+return {rallies,media,tiktok,polls};
+}});
+
+define({id: "712f4331", outputs: ["partyColors"], body: () => {
+const partyColors = {
+  SPD: '#E3000F', // Traditional SPD red
+  CDU: '#000000', // CDU black
+  CSU: '#0066CC', // CSU blue
+  Grüne: '#46962B', // Green party green
+  FDP: '#FFED00', // FDP yellow
+  Linke: '#BE3075', // Left party purple/pink
+  AfD: '#009EE0', // AfD blue
+  BSW: '#E64415' // BSW orange
+}
+return {partyColors};
+}});
+
+define({id: "bcff67a1", inputs: ["Plot","partyColors"], outputs: ["color"], body: (Plot,partyColors) => {
+const color = Plot.scale({
+  color: {
+    type: 'categorical',
+    domain: Object.keys(partyColors),
+    range: Object.values(partyColors),
+    unknown: '#CCCCCC' // Default gray for unlisted parties
+  }
+})
+return {color};
+}});
+
+define({id: "1daa46aa", inputs: ["Plot","color"], outputs: ["getTimeInterval","plotStyle","axisStyle","rallyTimeline","mediaTimeline","tiktokTimeline","pollsTimeline"], body: (Plot,color) => {
+function getTimeInterval(start, end) {
+  const daysDiff = (end - start) / (1000 * 60 * 60 * 24)
+
+  if (daysDiff <= 180) {
+    return 'day'
+  } else if (daysDiff <= 730) {
+    return 'week'
+  } else {
+    return 'month'
+  }
+}
+
+// Shared plot style configuration
+const plotStyle = {
+  background: 'transparent',
+  fontSize: 13,
+  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+  color: '#1e293b',
+  overflow: 'visible'
+}
+
+const axisStyle = {
+  tickColor: '#94a3b8',
+  labelColor: '#64748b',
+  labelFontSize: 12,
+  tickFontSize: 11
+}
+
+function rallyTimeline(data, { width, start, end } = {}) {
+  const filteredData = data.filter(d => {
+    const date = new Date(d.date)
+    return date >= start && date <= end
+  })
+
+  const interval = getTimeInterval(start, end)
+
+  return Plot.plot({
+    title: '🎯 Campaign Rally Attendance',
+    subtitle: `${
+      interval.charAt(0).toUpperCase() + interval.slice(1)
+    }ly total attendees at political party rallies`,
+    width,
+    height: 300,
+    style: plotStyle,
+    y: {
+      ...axisStyle,
+      label: 'Number of Attendees',
+      labelOffset: 45,
+      tickFormat: d => `${d / 1000}k`
+    },
+    x: {
+      ...axisStyle,
+      label: null,
+      labelOffset: 35
+    },
+    color: { ...color, legend: true },
+    marks: [
+      Plot.rectY(
+        filteredData,
+        Plot.binX(
+          { y: 'sum' },
+          {
+            x: 'date',
+            y: 'size',
+            fill: d => d.organizers_canonical[0],
+            interval: interval,
+            tip: {
+              format: {
+                y: d => `${d.toLocaleString()} attendees`
+              }
+            },
+            opacity: 0.9
+          }
+        )
+      ),
+      Plot.ruleY([0])
+    ]
+  })
+}
+
+function mediaTimeline(data, { width, start, end } = {}) {
+  const filteredData = data
+    .filter(d => {
+      const date = new Date(d.date)
+      return date >= start && date <= end
+    })
+    .map(d => {
+      return Object.entries(d)
+        .filter(([key]) => key !== 'date')
+        .map(([party, count]) => ({
+          date: new Date(d.date),
+          party,
+          count
+        }))
+    })
+    .flat()
+
+  const interval = getTimeInterval(start, end)
+
+  return Plot.plot({
+    title: '📰 Media Coverage',
+    subtitle: `${
+      interval.charAt(0).toUpperCase() + interval.slice(1)
+    }ly average mentions of political parties in German online news`,
+    width,
+    height: 300,
+    style: plotStyle,
+    y: {
+      ...axisStyle,
+      label: 'Number of Articles',
+      labelOffset: 45
+    },
+    x: {
+      ...axisStyle,
+      label: null,
+      labelOffset: 35
+    },
+    color: { ...color, legend: true },
+    marks: [
+      Plot.lineY(
+        filteredData,
+        Plot.binX(
+          { y: 'mean' },
+          {
+            x: 'date',
+            y: 'count',
+            stroke: 'party',
+            interval: interval,
+            tip: {
+              format: {
+                y: d => d.toLocaleString()
+              }
+            },
+            curve: 'basis',
+            strokeWidth: 2
+          }
+        )
+      ),
+      Plot.ruleY([0]),
+      Plot.crosshairX(filteredData, {
+        x: "date",
+        y: "count"
+      })
+    ]
+  })
+}
+
+function tiktokTimeline(data, { width, start, end } = {}) {
+  const filteredData = data
+    .filter(d => {
+      const date = new Date(d.date)
+      return date >= start && date <= end
+    })
+    .map(d => {
+      return Object.entries(d)
+        .filter(([key]) => key !== 'date')
+        .map(([party, count]) => ({
+          date: new Date(d.date),
+          party,
+          count
+        }))
+    })
+    .flat()
+
+  const interval = getTimeInterval(start, end)
+
+  return Plot.plot({
+    title: '📱 TikTok Activity',
+    subtitle: `${
+      interval.charAt(0).toUpperCase() + interval.slice(1)
+    }ly total views of videos posted by or mentioning political parties on TikTok`,
+    width,
+    height: 300,
+    style: plotStyle,
+    y: {
+      ...axisStyle,
+      label: 'Number of Views',
+      labelOffset: 45,
+      tickFormat: d => `${d / 1000000}M`
+    },
+    x: {
+      ...axisStyle,
+      label: null,
+      labelOffset: 35
+    },
+    color: { ...color, legend: true },
+    marks: [
+      Plot.lineY(
+        filteredData,
+        Plot.binX(
+          { y: 'sum' },
+          {
+            x: 'date',
+            y: 'count',
+            stroke: 'party',
+            interval: interval,
+            tip: {
+              format: {
+                y: d => `${(d / 1000000).toFixed(1)}M views`
+              }
+            },
+            curve: 'basis',
+            strokeWidth: 2
+          }
+        )
+      ),
+      Plot.ruleY([0]),
+      Plot.crosshairX(filteredData, {
+        x: "date",
+        y: "count"
+      })
+    ]
+  })
+}
+
+function pollsTimeline(data, { width, start, end } = {}) {
+  const filteredData = data
+    .filter(d => {
+      const date = new Date(d.date)
+      return date >= start && date <= end
+    })
+    .map(row => ({ ...row, date: new Date(row.date) }))
+
+  const interval = getTimeInterval(start, end)
+  const ma = Plot.windowY(
+    { k: 14, anchor: 'end', reduce: 'mean' },
+    { x: 'date', y: 'value', stroke: 'party', tip: true }
+  )
+
+  return Plot.plot({
+    title: '🗳️ Polling',
+    subtitle: '14-day moving average of German federal election polls, with individual poll results shown as dots',
+    width,
+    height: 300,
+    style: plotStyle,
+    y: {
+      ...axisStyle,
+      label: '%',
+      labelOffset: 45
+    },
+    x: {
+      ...axisStyle,
+      label: null,
+      labelOffset: 35
+    },
+    color: { ...color, legend: true },
+    marks: [
+      Plot.dot(filteredData, {
+        x: 'date',
+        y: 'value',
+        stroke: 'party',
+        fill: 'party',
+        r: 2,
+        fillOpacity: 0.5
+      }),
+      Plot.lineY(filteredData, {
+        ...ma,
+        strokeWidth: 2,
+        tip: {
+          format: {
+            y: d => `${d.toFixed(1)}%`
+          }
+        }
+      }),
+      Plot.ruleY([5], {
+        strokeWidth: 5,
+        stroke: 'grey',
+        strokeOpacity: 0.5
+      }),
+      Plot.ruleY([0]),
+      Plot.crosshairX(filteredData, ma)
+    ]
+  })
+}
+return {getTimeInterval,plotStyle,axisStyle,rallyTimeline,mediaTimeline,tiktokTimeline,pollsTimeline};
+}});
+
+</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<div class="header">
+  <h1>Wahlkampfmonitor 🐳💥</h1>
+  <p class="description">A real-time dashboard tracking German political parties' campaign activities, media presence, and polling data.</p>
+</div>
+<div class="time-range">
+  <div id="slider-container">
+    <div class="slider-track-bg"></div>
+    <div class="slider-track"></div>
+    <input type="range" id="start-date" min="1577836800000" max="1735689600000" step="86400000">
+    <input type="range" id="end-date" min="1577836800000" max="1735689600000" step="86400000">
+  </div>
+  <div class="date-labels">
+    <div class="date-label">From: <span id="start-label"></span></div>
+    <div class="date-label">To: <span id="end-label"></span></div>
+  </div>
+</div>
+<div class="observablehq observablehq--block"><!--:4f536e00:--></div>
+<div class="observablehq observablehq--block"><!--:9eb0c12a:--></div>
+<div id="slider"></div>
+<div class="grid">
+  <div class="card">
+    <div class="chart">
+      <observablehq-loading></observablehq-loading><!--:0dd833bc:-->
+    </div>
+    <div class="source">
+      Data: <a href="https://acleddata.com" target="_blank" rel="noopener">ACLED</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="chart">
+      <observablehq-loading></observablehq-loading><!--:32438f4a:-->
+    </div>
+    <div class="source">
+      Data: <a href="https://mediacloud.org" target="_blank" rel="noopener">Media Cloud</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="chart">
+      <observablehq-loading></observablehq-loading><!--:2d27a17e:-->
+    </div>
+    <div class="source">
+      Data: <a href="https://github.com/davidteather/TikTok-Api" target="_blank" rel="noopener">TikTok API</a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="chart">
+      <observablehq-loading></observablehq-loading><!--:430956ee:-->
+    </div>
+    <div class="source">
+      Data: <a href="https://www.wahlrecht.de/umfragen/" target="_blank" rel="noopener">Wahlrecht.de</a>, 
+      <a href="https://www.zeit.de/politik/deutschland/umfragen-bundestagswahl-neuwahl-wahltrend" target="_blank" rel="noopener">ZEIT Online</a>
+    </div>
+  </div>
+</div>
+<!-- Load and transform the data -->
+<div class="observablehq observablehq--block"><!--:0900d8e0:--></div>
+<!-- Define party colors -->
+<div class="observablehq observablehq--block"><!--:712f4331:--></div>
+<!-- A shared color scale using party colors -->
+<div class="observablehq observablehq--block"><!--:bcff67a1:--></div>
+<!-- Timeline plots -->
+<div class="observablehq observablehq--block"><!--:1daa46aa:--></div>
+</main>
+<footer id="observablehq-footer">
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2025-02-03T23:08:50">Feb 3, 2025</a>.</div>
+</footer>
+</div>
