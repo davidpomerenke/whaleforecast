@@ -182,20 +182,40 @@ def get_tiktok_party_counts() -> pd.DataFrame:
 
     # First pass: collect all hashtags and their counts per party
     party_hashtags = {}
+    party_accounts = {}
     all_hashtags = set()
     
     for party, terms in tqdm(party_search_terms.items()):
         videos = get_videos_for_keywords(f"{party} partei", n=50)
         
-        # Extract hashtags from video titles
+        # Extract hashtags from video titles and track accounts
         hashtag_counts = Counter()
+        account_stats = {}
+        
         for video in videos:
             video["url"] = f"https://www.tiktok.com/@{video['author']['unique_id']}/video/{video['video_id']}"
             hashtags = re.findall(r"#(\w+)", video["title"])
             hashtag_counts.update(hashtags)
             all_hashtags.update(hashtags)
+            
+            # Track account statistics
+            author = video['author']['unique_id']
+            if author not in account_stats:
+                account_stats[author] = {
+                    'videos': 0,
+                    'total_plays': 0,
+                    'total_likes': 0,
+                    'total_comments': 0,
+                    'avatar': video['author']['avatar'],
+                    'nickname': video['author']['nickname']
+                }
+            account_stats[author]['videos'] += 1
+            account_stats[author]['total_plays'] += video['play_count']
+            account_stats[author]['total_likes'] += video['digg_count']
+            account_stats[author]['total_comments'] += video['comment_count']
         
         party_hashtags[party] = hashtag_counts
+        party_accounts[party] = account_stats
 
     # Calculate document frequency (number of parties each hashtag appears in)
     hashtag_party_freq = Counter()
@@ -207,9 +227,9 @@ def get_tiktok_party_counts() -> pd.DataFrame:
     
     # Calculate TF-IDF inspired scores for each party
     for party, hashtag_counts in party_hashtags.items():
-        videos = get_videos_for_keywords(f"{party} partei", n=50)
+        videos = get_videos_for_keywords(f"{party} partei", n=100)
         
-        # Calculate scores
+        # Calculate hashtag scores
         hashtag_scores = []
         for tag, count in hashtag_counts.items():
             # TF: normalized term frequency
@@ -223,9 +243,49 @@ def get_tiktok_party_counts() -> pd.DataFrame:
         # Sort by score instead of raw count
         top_hashtags = sorted(hashtag_scores, key=lambda x: x["score"], reverse=True)[:10]
         
+        # Calculate account scores and get top accounts
+        account_scores = []
+        for author, account_stats in party_accounts[party].items():
+            # Only include accounts with at least 2 videos
+            if account_stats['videos'] >= 2:
+                # Score = weighted sum of engagement metrics
+                engagement_score = (
+                    account_stats['total_plays'] * 1 +  # Base weight for views
+                    account_stats['total_likes'] * 2 +  # Higher weight for likes
+                    account_stats['total_comments'] * 3  # Highest weight for comments
+                ) * (1 + 0.2 * account_stats['videos'])  # Bonus for consistent posting
+                
+                account_scores.append({
+                    "username": author,
+                    "nickname": account_stats['nickname'],
+                    "avatar": account_stats['avatar'],
+                    "videos": account_stats['videos'],
+                    "total_plays": account_stats['total_plays'],
+                    "total_likes": account_stats['total_likes'],
+                    "total_comments": account_stats['total_comments'],
+                    "score": engagement_score
+                })
+        
+        # Sort accounts by score
+        top_accounts = sorted(account_scores, key=lambda x: x["score"], reverse=True)[:5]
+        
+        # If no accounts with 2+ videos found, add placeholder
+        if not top_accounts:
+            top_accounts = [{
+                "username": "none",
+                "nickname": "No accounts with 2+ videos",
+                "avatar": "",
+                "videos": 0,
+                "total_plays": 0,
+                "total_likes": 0,
+                "total_comments": 0,
+                "score": 0
+            }]
+        
         stats[party] = {
             "videos": videos,
-            "top_hashtags": top_hashtags
+            "top_hashtags": top_hashtags,
+            "top_accounts": top_accounts
         }
 
     return stats

@@ -268,6 +268,123 @@ data
 .video-card:hover .video-info {
   max-height: 80%;
 }
+
+.top-accounts-section {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.top-accounts-section::-webkit-scrollbar {
+  height: 8px;
+}
+
+.top-accounts-section::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.top-accounts-section::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.top-accounts-section::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.account-card {
+  flex: 0 0 180px;
+  min-width: 180px;
+  height: fit-content;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: transform 0.2s;
+  position: relative;
+}
+
+.account-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.account-header {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.account-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.account-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.account-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.account-username {
+  color: #64748b;
+  font-size: 0.7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-stats {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.375rem;
+  padding-top: 0.375rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.account-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  color: #475569;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.account-stat-label {
+  color: #64748b;
+  font-size: 0.65rem;
+}
+
+.account-stat-value {
+  font-weight: 600;
+  color: #1e293b;
+}
+
 </style>
 
 ```js
@@ -325,6 +442,37 @@ const partyRows = Object.entries(data).map(([party, partyData]) => {
             </div>
           `;
         })}
+      </div>
+      <div class="top-accounts-section">
+        ${partyData.top_accounts.map(account => html`
+          <div class="account-card">
+            <div class="account-header">
+              <img class="account-avatar" src="${account.avatar}" alt="${account.username}">
+              <div class="account-info">
+                <div class="account-name">${account.nickname}</div>
+                <div class="account-username">@${account.username}</div>
+              </div>
+            </div>
+            <div class="account-stats">
+              <div class="account-stat">
+                <span class="account-stat-label">Videos</span>
+                <span class="account-stat-value">${account.videos}</span>
+              </div>
+              <div class="account-stat">
+                <span class="account-stat-label">Views</span>
+                <span class="account-stat-value">${formatNumber(account.total_plays)}</span>
+              </div>
+              <div class="account-stat">
+                <span class="account-stat-label">Likes</span>
+                <span class="account-stat-value">${formatNumber(account.total_likes)}</span>
+              </div>
+              <div class="account-stat">
+                <span class="account-stat-label">Comments</span>
+                <span class="account-stat-value">${formatNumber(account.total_comments)}</span>
+              </div>
+            </div>
+          </div>
+        `)}
       </div>
       <div class="video-list">
         ${partyData.videos.map(video => html`
