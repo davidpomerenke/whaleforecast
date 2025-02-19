@@ -220,6 +220,51 @@ data
   background: #e2e8f0;
 }
 
+.hashtags-section {
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hashtag-pill {
+  background: #f1f5f9;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.hashtag-pill[data-importance="high"] {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 600;
+  transform: scale(1.05);
+}
+
+.hashtag-pill[data-importance="medium"] {
+  background: #f1f5f9;
+  color: #0284c7;
+}
+
+.hashtag-pill[data-importance="low"] {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.hashtag-count {
+  background: #e2e8f0;
+  padding: 0.125rem 0.375rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
 .video-card:hover .video-info {
   max-height: 80%;
 }
@@ -256,10 +301,30 @@ const partyColors = {
 }
 
 const partyRows = Object.entries(data).map(([party, partyData]) => {
+  // Calculate score thresholds for this party's hashtags
+  const scores = partyData.top_hashtags.map(h => h.score);
+  const maxScore = Math.max(...scores);
+  const highThreshold = maxScore * 0.7;
+  const mediumThreshold = maxScore * 0.3;
+
   return html`
     <div class="party-row">
       <div class="party-header" style="border-left: 4px solid ${partyColors[party] || '#ccc'}">
         <h2>${party}</h2>
+      </div>
+      <div class="hashtags-section">
+        ${partyData.top_hashtags.map(hashtag => {
+          let importance = "low";
+          if (hashtag.score >= highThreshold) importance = "high";
+          else if (hashtag.score >= mediumThreshold) importance = "medium";
+          
+          return html`
+            <div class="hashtag-pill" data-importance="${importance}">
+              #${hashtag.tag}
+              <span class="hashtag-count">${formatNumber(hashtag.count)}</span>
+            </div>
+          `;
+        })}
       </div>
       <div class="video-list">
         ${partyData.videos.map(video => html`

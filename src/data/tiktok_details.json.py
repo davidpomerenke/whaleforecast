@@ -5,6 +5,7 @@ import sys
 from collections import Counter
 from datetime import date, datetime
 from typing import Any
+from math import log
 
 import pandas as pd
 import requests
@@ -179,15 +180,52 @@ def get_tiktok_party_counts() -> pd.DataFrame:
     """Get weekly TikTok comment counts for all parties using their most popular hashtags."""
     from parties import party_search_terms
 
-    stats = {}
-
-    # Step 1: Get and print hashtag suggestions for each party
+    # First pass: collect all hashtags and their counts per party
+    party_hashtags = {}
+    all_hashtags = set()
+    
     for party, terms in tqdm(party_search_terms.items()):
         videos = get_videos_for_keywords(f"{party} partei", n=50)
+        
+        # Extract hashtags from video titles
+        hashtag_counts = Counter()
         for video in videos:
             video["url"] = f"https://www.tiktok.com/@{video['author']['unique_id']}/video/{video['video_id']}"
+            hashtags = re.findall(r"#(\w+)", video["title"])
+            hashtag_counts.update(hashtags)
+            all_hashtags.update(hashtags)
+        
+        party_hashtags[party] = hashtag_counts
+
+    # Calculate document frequency (number of parties each hashtag appears in)
+    hashtag_party_freq = Counter()
+    for hashtags in party_hashtags.values():
+        hashtag_party_freq.update(hashtags.keys())
+    
+    stats = {}
+    num_parties = len(party_search_terms)
+    
+    # Calculate TF-IDF inspired scores for each party
+    for party, hashtag_counts in party_hashtags.items():
+        videos = get_videos_for_keywords(f"{party} partei", n=50)
+        
+        # Calculate scores
+        hashtag_scores = []
+        for tag, count in hashtag_counts.items():
+            # TF: normalized term frequency
+            tf = count / sum(hashtag_counts.values())
+            # IDF: log of inverse document frequency
+            idf = log(num_parties / hashtag_party_freq[tag])
+            # Final score
+            score = tf * idf * count  # multiply by raw count to still give weight to popular tags
+            hashtag_scores.append({"tag": tag, "count": count, "score": score})
+        
+        # Sort by score instead of raw count
+        top_hashtags = sorted(hashtag_scores, key=lambda x: x["score"], reverse=True)[:10]
+        
         stats[party] = {
-            "videos": videos
+            "videos": videos,
+            "top_hashtags": top_hashtags
         }
 
     return stats
