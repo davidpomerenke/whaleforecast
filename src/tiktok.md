@@ -39,12 +39,52 @@ data
 .party-header {
   padding: 1rem;
   border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .party-header h2 {
   margin: 0;
   color: #1e293b;
   font-size: 1.5rem;
+}
+
+.party-overall-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-right: 1rem;
+}
+
+.party-stats-title {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.party-stats-grid {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.party-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.party-stat-value {
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: #1e293b;
+}
+
+.party-stat-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
 }
 
 .video-list {
@@ -417,95 +457,121 @@ const partyColors = {
   BSW: '#E64415'
 }
 
-const partyRows = Object.entries(data).map(([party, partyData]) => {
-  // Calculate score thresholds for this party's hashtags
-  const scores = partyData.top_hashtags.map(h => h.score);
-  const maxScore = Math.max(...scores);
-  const highThreshold = maxScore * 0.7;
-  const mediumThreshold = maxScore * 0.3;
+const partyRows = Object.entries(data)
+  .sort((a, b) => b[1].overall_stats.total_views - a[1].overall_stats.total_views)
+  .map(([party, partyData]) => {
+    // Calculate score thresholds for this party's hashtags
+    const scores = partyData.top_hashtags.map(h => h.score);
+    const maxScore = Math.max(...scores);
+    const highThreshold = maxScore * 0.7;
+    const mediumThreshold = maxScore * 0.3;
 
-  return html`
-    <div class="party-row">
-      <div class="party-header" style="border-left: 4px solid ${partyColors[party] || '#ccc'}">
-        <h2>${party}</h2>
-      </div>
-      <div class="hashtags-section">
-        ${partyData.top_hashtags.map(hashtag => {
-          let importance = "low";
-          if (hashtag.score >= highThreshold) importance = "high";
-          else if (hashtag.score >= mediumThreshold) importance = "medium";
-          
-          return html`
-            <div class="hashtag-pill" data-importance="${importance}">
-              #${hashtag.tag}
-              <span class="hashtag-count">${formatNumber(hashtag.count)}</span>
+    return html`
+      <div class="party-row">
+        <div class="party-header" style="border-left: 4px solid ${partyColors[party] || '#ccc'}">
+          <h2>${party}</h2>
+          <div class="party-overall-stats">
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_videos)}</span>
+              <span class="party-stat-label">Videos</span>
             </div>
-          `;
-        })}
-      </div>
-      <div class="top-accounts-section">
-        ${partyData.top_accounts.map(account => html`
-          <div class="account-card">
-            <div class="account-header">
-              <img class="account-avatar" src="${account.avatar}" alt="${account.username}">
-              <div class="account-info">
-                <div class="account-name">${account.nickname}</div>
-                <div class="account-username">@${account.username}</div>
-              </div>
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_views)}</span>
+              <span class="party-stat-label">Views</span>
             </div>
-            <div class="account-stats">
-              <div class="account-stat">
-                <span class="account-stat-label">Videos</span>
-                <span class="account-stat-value">${account.videos}</span>
-              </div>
-              <div class="account-stat">
-                <span class="account-stat-label">Views</span>
-                <span class="account-stat-value">${formatNumber(account.total_plays)}</span>
-              </div>
-              <div class="account-stat">
-                <span class="account-stat-label">Likes</span>
-                <span class="account-stat-value">${formatNumber(account.total_likes)}</span>
-              </div>
-              <div class="account-stat">
-                <span class="account-stat-label">Comments</span>
-                <span class="account-stat-value">${formatNumber(account.total_comments)}</span>
-              </div>
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_likes)}</span>
+              <span class="party-stat-label">Likes</span>
+            </div>
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_comments)}</span>
+              <span class="party-stat-label">Comments</span>
+            </div>
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_shares)}</span>
+              <span class="party-stat-label">Shares</span>
             </div>
           </div>
-        `)}
-      </div>
-      <div class="video-list">
-        ${partyData.videos.map(video => html`
-          <a class="video-card" href="${video.url}" target="_blank" rel="noopener">
-            <div class="video-thumbnail">
-              <img src="${video.origin_cover}" alt="Video thumbnail">
-            </div>
-            <div class="video-header">
-              <img class="author-avatar" src="${video.author.avatar}" alt="${video.author.unique_id}">
-              <span class="author-name">@${video.author.unique_id}</span>
-            </div>
-            <div class="video-info">
-              <div class="video-content">
-                <div class="video-title-wrapper" onclick="event.preventDefault(); this.classList.toggle('expanded')">
-                  <div class="video-title">${video.title}</div>
+        </div>
+        <div class="hashtags-section">
+          ${partyData.top_hashtags.map(hashtag => {
+            let importance = "low";
+            if (hashtag.score >= highThreshold) importance = "high";
+            else if (hashtag.score >= mediumThreshold) importance = "medium";
+            
+            return html`
+              <div class="hashtag-pill" data-importance="${importance}">
+                #${hashtag.tag}
+                <span class="hashtag-count">${formatNumber(hashtag.count)}</span>
+              </div>
+            `;
+          })}
+        </div>
+        ${partyData.top_accounts.length > 0 ? html`
+        <div class="top-accounts-section">
+          ${partyData.top_accounts.map(account => html`
+            <div class="account-card">
+              <div class="account-header">
+                <img class="account-avatar" src="${account.avatar}" alt="${account.username}">
+                <div class="account-info">
+                  <div class="account-name">${account.nickname}</div>
+                  <div class="account-username">@${account.username}</div>
                 </div>
-                <div class="video-stats">
-                  <div class="video-stats-row">
-                    <span class="video-stat">👁️ ${formatNumber(video.play_count)}</span>
-                    <span class="video-stat">❤️ ${formatNumber(video.digg_count)}</span>
-                    <span class="video-stat">💬 ${formatNumber(video.comment_count)}</span>
-                  </div>
-                  <div class="video-stats-row">
-                    <span class="video-stat">📅 ${formatDate(video.create_time)}</span>
-                  </div>
+              </div>
+              <div class="account-stats">
+                <div class="account-stat">
+                  <span class="account-stat-label">Videos</span>
+                  <span class="account-stat-value">${account.videos}</span>
+                </div>
+                <div class="account-stat">
+                  <span class="account-stat-label">Views</span>
+                  <span class="account-stat-value">${formatNumber(account.total_plays)}</span>
+                </div>
+                <div class="account-stat">
+                  <span class="account-stat-label">Likes</span>
+                  <span class="account-stat-value">${formatNumber(account.total_likes)}</span>
+                </div>
+                <div class="account-stat">
+                  <span class="account-stat-label">Comments</span>
+                  <span class="account-stat-value">${formatNumber(account.total_comments)}</span>
                 </div>
               </div>
             </div>
-          </a>
-        `)}
+          `)}
+        </div>
+        ` : ''}
+        <div class="video-list">
+          ${partyData.videos.map(video => html`
+            <a class="video-card" href="${video.url}" target="_blank" rel="noopener">
+              <div class="video-thumbnail">
+                <img src="${video.origin_cover}" alt="Video thumbnail">
+              </div>
+              <div class="video-header">
+                <img class="author-avatar" src="${video.author.avatar}" alt="${video.author.unique_id}">
+                <span class="author-name">@${video.author.unique_id}</span>
+              </div>
+              <div class="video-info">
+                <div class="video-content">
+                  <div class="video-title-wrapper" onclick="event.preventDefault(); this.classList.toggle('expanded')">
+                    <div class="video-title">${video.title}</div>
+                  </div>
+                  <div class="video-stats">
+                    <div class="video-stats-row">
+                      <span class="video-stat">👁️ ${formatNumber(video.play_count)}</span>
+                      <span class="video-stat">❤️ ${formatNumber(video.digg_count)}</span>
+                      <span class="video-stat">💬 ${formatNumber(video.comment_count)}</span>
+                    </div>
+                    <div class="video-stats-row">
+                      <span class="video-stat">📅 ${formatDate(video.create_time)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          `)}
+        </div>
       </div>
-    </div>
-  `
-})
+    `
+  })
 
 display(html`<div class="party-list">${partyRows}</div>`)

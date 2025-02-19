@@ -246,6 +246,29 @@ def get_top_accounts(account_stats: Dict[str, Dict[str, Any]], min_videos: int =
         "score": 0
     }]
 
+def calculate_party_overall_stats(videos: List[Dict[str, Any]]) -> Dict[str, int]:
+    """Calculate overall statistics for a party's videos from the last 30 days."""
+    # Get current timestamp and timestamp from 30 days ago
+    current_time = int(datetime.now().timestamp())
+    thirty_days_ago = current_time - (30 * 24 * 60 * 60)
+    
+    # Filter videos from last 30 days
+    recent_videos = [video for video in videos if video["create_time"] >= thirty_days_ago]
+    
+    return {
+        "total_views": sum(video["play_count"] for video in recent_videos),
+        "total_likes": sum(video["digg_count"] for video in recent_videos),
+        "total_comments": sum(video["comment_count"] for video in recent_videos),
+        "total_videos": len(recent_videos),
+        "total_shares": sum(video["share_count"] for video in recent_videos)
+    }
+
+def video_mentions_party(video: Dict[str, Any], party: str, terms: List[str]) -> bool:
+    """Check if a video mentions the party name or any of its associated terms in its title."""
+    title_lower = video["title"].lower()
+    # Check if either the party name or any of its associated terms are in the title
+    return any(term.lower() in title_lower for term in [party] + terms)
+
 def get_tiktok_party_counts() -> Dict[str, Any]:
     """Get weekly TikTok comment counts for all parties using their most popular hashtags."""
     from parties import party_search_terms
@@ -258,6 +281,8 @@ def get_tiktok_party_counts() -> Dict[str, Any]:
     # First pass: collect hashtags and account stats
     for party, terms in tqdm(party_search_terms.items()):
         videos = get_videos_for_keywords(f"{party} partei", n=100)
+        # Filter videos to only include those that mention the party or its terms
+        videos = [video for video in videos if video_mentions_party(video, party, terms)]
         # Process videos and store them
         for video in videos:
             video["url"] = f"https://www.tiktok.com/@{video['author']['unique_id']}/video/{video['video_id']}"
@@ -285,11 +310,13 @@ def get_tiktok_party_counts() -> Dict[str, Any]:
         )
         top_hashtags = sorted(hashtag_scores, key=lambda x: x["score"], reverse=True)[:10]
         top_accounts = get_top_accounts(party_accounts[party])
+        overall_stats = calculate_party_overall_stats(party_videos[party])
         
         stats[party] = {
             "videos": party_videos[party],  # Use stored videos with URLs
             "top_hashtags": top_hashtags,
-            "top_accounts": top_accounts
+            "top_accounts": top_accounts,
+            "overall_stats": overall_stats
         }
 
     return stats
