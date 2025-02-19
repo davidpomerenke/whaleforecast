@@ -1,5 +1,7 @@
+import json
 import os
 import re
+import sys
 from collections import Counter
 from datetime import date, datetime
 from typing import Any
@@ -173,36 +175,24 @@ def get_comment_history_for_hashtag(
     return ts
 
 
-def get_tiktok_party_counts(
-    start_date: date, end_date: date, verbose: bool
-) -> pd.DataFrame:
+def get_tiktok_party_counts() -> pd.DataFrame:
     """Get weekly TikTok comment counts for all parties using their most popular hashtags."""
     from parties import party_search_terms
 
-    all_counts = {}
+    stats = {}
 
     # Step 1: Get and print hashtag suggestions for each party
     for party, terms in tqdm(party_search_terms.items()):
-        video_ts = get_video_history_for_hashtag(
-            hashtag=party.replace(" ", ""),
-            n=50,  # Adjust these numbers as needed (up to 1000(?))
-            verbose=verbose,
-        )
-        all_counts[party] = video_ts["views"]
+        videos = get_videos_for_keywords(f"{party} partei", n=50)
+        for video in videos:
+            video["url"] = f"https://www.tiktok.com/@{video['author']['unique_id']}/video/{video['video_id']}"
+        stats[party] = {
+            "videos": videos
+        }
 
-    # Combine all party counts
-    if all_counts:
-        result = pd.DataFrame(all_counts)
-        result = result.fillna(0)
-        result = result.sort_index()
-        result = result.reset_index().rename(columns={"index": "date"})
-        return result
-
-    return pd.DataFrame()
+    return stats
 
 
 if __name__ == "__main__":
-    df = get_tiktok_party_counts(
-        start_date=date(2020, 1, 1), end_date=date.today(), verbose=False
-    )
-    print(df.to_json(orient="records", date_format="iso"))
+    data = get_tiktok_party_counts()
+    print(json.dumps(data, indent=2))

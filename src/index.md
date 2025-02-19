@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Walkampfmonitor
+title: Whaleforecast
 toc: false
 head: <link rel="icon"
   href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22black%22>🐳</text></svg>">
@@ -9,7 +9,7 @@ head: <link rel="icon"
 ---
 
 <div class="header">
-  <h1>Walkampfmonitor 🐳</h1>
+  <h1>Whaleforecast 🐳</h1>
   <p class="description">A real-time dashboard tracking German political parties' campaign activities, media presence, and polling data.</p>
 </div>
 
