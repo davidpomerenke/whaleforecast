@@ -310,9 +310,15 @@ def get_tiktok_party_counts() -> Dict[str, Any]:
                 'hashtag': ''
             }
 
-        videos = get_videos_for_keywords(f"{party} partei", n=500)
+        videos = get_videos_for_hashtag(hashtag, n=500, verbose=False)
         # Filter videos to only include those that mention the party or its terms
         videos = [video for video in videos if video_mentions_party(video, party, terms)]
+        # filter videos by last 30 days
+        current_time = int(datetime.now().timestamp())
+        thirty_days_ago = current_time - (30 * 24 * 60 * 60)
+        videos = [video for video in videos if video["create_time"] >= thirty_days_ago]
+        # sort videos by play_count
+        videos = sorted(videos, key=lambda x: x["play_count"], reverse=True)
         # Process videos and store them
         for video in videos:
             video["url"] = f"https://www.tiktok.com/@{video['author']['unique_id']}/video/{video['video_id']}"

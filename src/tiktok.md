@@ -104,14 +104,6 @@ function timelineChart(data, width) {
 ```
 
 <style>
-.note {
-  background: #f1f5f9;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  width: 100%;
-}
-
 .party-list {
   display: flex;
   flex-direction: column;

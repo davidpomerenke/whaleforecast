@@ -37,7 +37,7 @@ party_search_terms = {
     # "Tierschutzpartei": ["Partei Mensch Umwelt Tierschutz"],
     # "UNABHÄNGIGE": [],
     # "V-Partei": [],
-    "Volt": [],
+    # "Volt": [],
     # "die Basis": ["dieBasis"],
     # "ÖDP": ["Ökologisch-Demokratische"],
 }
