@@ -14,17 +14,14 @@ head: <link rel="icon"
 
 ```js
 const data = FileAttachment('data/tiktok_details.json').json()
-```
-
-```js
-data
+const rollingAverage = 14
 ```
 
 <div class="party-list">
   <div class="party-row">
     <div class="party-header">
-      <h2>🔥 Hashtag Engagement</h2>
-      <p class="description">Weekly comment volume on TikTok videos with party hashtags (last 90 days)</p>
+      <h2>#️⃣ Party hashtag popularity</h2>
+      <p class="description">Daily TikTok video views by party hashtags, ${rollingAverage}-day rolling average</p>
     </div>
     <div class="chart-container">
       ${resize((width) => timelineChart(data, width))}
@@ -41,24 +38,29 @@ const partyColors = {
   FDP: '#FFED00',
   Linke: '#BE3075',
   AfD: '#009EE0',
-  BSW: '#E64415'
+  BSW: '#E64415',
+  Volt: '#800080',
+  'Die PARTEI': '#808080',
+  'Freie Wähler': '#FFA500',
 }
+const partyToHashtag = party => '#' + party.toLowerCase().replace(' ', '').replace('linke', 'dielinke')
+
+const hashtagColors = Object.fromEntries(Object.entries(partyColors).map(([party, color]) => [partyToHashtag(party), color]))
 
 function timelineChart(data, width) {
   // Transform data into time series format
   const chartData = [];
-  
   // Process each party's data
   Object.entries(data).forEach(([party, partyData]) => {
     partyData.timeline.forEach(day => {
       chartData.push({
         party: party,
+        hashtag: partyToHashtag(party),
         date: new Date(day.date),
         views: day.views
       })
     })
   })
-  const rollingAverage = 14
   return Plot.plot({
     width,
     height: 300,
@@ -70,46 +72,46 @@ function timelineChart(data, width) {
     },
     y: {
       grid: true,
-      label: `${rollingAverage}-Day Rolling Average Views`,
+      label: `Daily Views (${rollingAverage}-day avg)`,
       labelOffset: 45,
-      tickFormat: d => (d > 1000000 ? (d / 1000000).toFixed(1) + 'M' : d > 1000 ? (d / 1000).toFixed(1) + 'K' : d.toLocaleString())
-    },
-    x: {
-      label: null,
-      labelOffset: 35,
-      tickFormat: d => d.toLocaleDateString('de-DE', { month: 'short', day: 'numeric' })
+      tickFormat: d => (d > 1000000 ? (d / 1000000).toFixed(0) + 'M' : d > 1000 ? (d / 1000).toFixed(0) + 'K' : d.toLocaleString()),
     },
     color: {
       type: 'categorical',
-      domain: Object.keys(partyColors),
-      range: Object.values(partyColors),
-      legend: true
+      domain: Object.keys(hashtagColors),
+      range: Object.values(hashtagColors),
+      legend: true,
     },
     marks: [
-      Plot.lineY(chartData, Plot.windowY(rollingAverage, {
+      Plot.areaY(chartData, Plot.windowY(rollingAverage, {
         x: 'date',
         y: 'views',
-        stroke: 'party',
-        strokeWidth: 2,
+        fill: 'hashtag',
+        stroke: 'hashtag',
+        strokeWidth: 1,
         curve: 'basis',
         tip: {
           format: {
             x: d => d.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' }),
-            y: d => Math.round(d).toLocaleString() + ` views (${rollingAverage}-day avg)`
+            y: d => Math.round(d).toLocaleString()
           }
         }
       })),
-      Plot.ruleY([0]),
-      Plot.crosshairX(chartData, {
-        x: 'date',
-        y: 'views'
-      })
+      Plot.ruleY([0])
     ]
   })
 }
 ```
 
 <style>
+.note {
+  background: #f1f5f9;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
 .party-list {
   display: flex;
   flex-direction: column;

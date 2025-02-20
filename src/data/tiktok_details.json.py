@@ -65,7 +65,7 @@ def get_videos_for_keywords(
         "region": "de",  # location of the proxy server
         "count": 30,  # max: 30
         "cursor": cursor,
-        "publish_time": "90",  # 0 - ALL 1 - Past 24 hours 7 - This week 30 - This month 90 - Last 3 months 180 - Last 6 months
+        "publish_time": 90,  # 0 - ALL 1 - Past 24 hours 7 - This week 30 - This month 90 - Last 3 months 180 - Last 6 months
         "sort_type": "0",  # 0 - Relevance 1 - Like count 3 - Date posted
     }
     data = make_api_request("feed/search", query)
@@ -132,18 +132,14 @@ def get_video_history_for_hashtag(
     Views are computed by summing the views of all videos that were posted in a given day.
     """
     videos = get_videos_for_hashtag(hashtag, n=n, verbose=verbose)
-    videos_recent = [video for video in videos if video["create_time"] >= (pd.Timestamp.now() - pd.Timedelta(days=90)).timestamp()]
-    print(hashtag, len(videos), len(videos_recent), file=sys.stderr)
     df = process_video_data(videos)
     ts = (
         df.resample("1D", on="date")
         .agg({"views": "sum", "id": "count"})
         .rename(columns={"id": "posts"})
     )
-    # print oldest and newest date to stderr
-    print(hashtag, ts.index.min(), ts.index.max(), file=sys.stderr)
     # limit to last 90 days
-    ts = ts[ts.index >= pd.Timestamp.now() - pd.Timedelta(days=90)]
+    ts = ts[ts.index >= pd.Timestamp.now() - pd.Timedelta(days=120)]
     # exclude today
     ts = ts[ts.index < pd.Timestamp.now()]
     return ts.reindex(pd.date_range(start=ts.index.min(), end=ts.index.max())).fillna(0)
@@ -314,7 +310,7 @@ def get_tiktok_party_counts() -> Dict[str, Any]:
                 'hashtag': ''
             }
 
-        videos = get_videos_for_keywords(f"{party} partei", n=100)
+        videos = get_videos_for_keywords(f"{party} partei", n=500)
         # Filter videos to only include those that mention the party or its terms
         videos = [video for video in videos if video_mentions_party(video, party, terms)]
         # Process videos and store them

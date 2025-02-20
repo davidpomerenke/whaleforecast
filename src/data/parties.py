@@ -19,7 +19,7 @@ party_search_terms = {
     # "Die Heimat": [],
     "Die PARTEI": [],
     # "Die Urbane": [],
-    # "Freie Wähler": [],
+    "Freie Wähler": [],
     # "Gartenpartei": [],
     # "Gesundheitsforschung": [],
     # "Gleichheitspartei": [],
@@ -37,7 +37,7 @@ party_search_terms = {
     # "Tierschutzpartei": ["Partei Mensch Umwelt Tierschutz"],
     # "UNABHÄNGIGE": [],
     # "V-Partei": [],
-    # "Volt": [],
+    "Volt": [],
     # "die Basis": ["dieBasis"],
     # "ÖDP": ["Ökologisch-Demokratische"],
 }
