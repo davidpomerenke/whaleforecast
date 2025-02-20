@@ -16,6 +16,10 @@ head: <link rel="icon"
 const data = FileAttachment('data/tiktok_details.json').json()
 ```
 
+```js
+data
+```
+
 <div class="party-list">
   <div class="party-row">
     <div class="party-header">
@@ -23,83 +27,38 @@ const data = FileAttachment('data/tiktok_details.json').json()
       <p class="description">Weekly comment volume on TikTok videos with party hashtags (last 90 days)</p>
     </div>
     <div class="chart-container">
-      ${resize((width) => commentsChart(data, width))}
+      ${resize((width) => timelineChart(data, width))}
     </div>
   </div>
 </div>
 
 ```js
-function commentsChart(data, width) {
-  // Get current date (without time) and date 90 days ago
-  const now = new Date()
-  now.setHours(0, 0, 0, 0)  // Set to start of day
-  const ninetyDaysAgo = new Date(now - 90 * 24 * 60 * 60 * 1000)
+const partyColors = {
+  SPD: '#E3000F',
+  CDU: '#000000',
+  CSU: '#0066CC',
+  'Grüne': '#46962B',
+  FDP: '#FFED00',
+  Linke: '#BE3075',
+  AfD: '#009EE0',
+  BSW: '#E64415'
+}
+
+function timelineChart(data, width) {
+  // Transform data into time series format
+  const chartData = [];
   
-  // Debug the input data structure
-  
-  // Process comment history data for each party
-  const chartData = Object.entries(data).flatMap(([party, partyData]) => {
-    if (!partyData.comment_history || !Array.isArray(partyData.comment_history)) {
-      console.log(`No valid comment history for party ${party}`)
-      return []
-    }
-    
-    
-    return partyData.comment_history.map(record => {
-      // Ensure we have the required fields
-      const dateField = record.date || record.index  // Try both date and index fields
-      if (!dateField || !('comments' in record)) {
-        console.log(`Invalid record for ${party}:`, record)
-        return null
-      }
-      
-      const date = new Date(dateField)
-      if (isNaN(date.getTime())) {
-        console.log(`Invalid date for ${party}:`, dateField)
-        return null
-      }
-      
-      return {
-        party,
-        hashtag: '#' + partyData.hashtag,
-        date,
-        comments: Number(record.comments)
-      }
-    }).filter(record => record !== null) // Remove invalid records
-  }).filter(d => d.date >= ninetyDaysAgo && d.date < now)  // Exclude current day
-  
-  // Debug the processed data
-  
-  // If no valid data, show empty plot with message
-  if (chartData.length === 0) {
-    return Plot.plot({
-      width,
-      height: 300,
-      style: {
-        background: 'transparent',
-        fontSize: 13,
-        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-        color: '#1e293b'
-      },
-      marks: [
-        Plot.text(["No data available for the selected time period"], {
-          x: width / 2,
-          y: 150,
-          fontSize: 16,
-          fill: '#64748b',
-          textAnchor: 'middle'
-        })
-      ]
+  // Process each party's data
+  Object.entries(data).forEach(([party, partyData]) => {
+    partyData.timeline.forEach(day => {
+      chartData.push({
+        party: party,
+        date: new Date(day.date),
+        views: day.views
+      })
     })
-  }
-
-  // Create a mapping of hashtags to party colors
-  const hashtagColors = Object.fromEntries(
-    Object.entries(data)
-      .filter(([_, partyData]) => partyData.hashtag)
-      .map(([party, partyData]) => ['#' + partyData.hashtag, partyColors[party]])
-  )
-
+  })
+  const rollingAverage = 14
   return Plot.plot({
     width,
     height: 300,
@@ -111,9 +70,9 @@ function commentsChart(data, width) {
     },
     y: {
       grid: true,
-      label: 'Number of Comments',
+      label: `${rollingAverage}-Day Rolling Average Views`,
       labelOffset: 45,
-      tickFormat: d => d.toLocaleString()
+      tickFormat: d => (d > 1000000 ? (d / 1000000).toFixed(1) + 'M' : d > 1000 ? (d / 1000).toFixed(1) + 'K' : d.toLocaleString())
     },
     x: {
       label: null,
@@ -122,28 +81,28 @@ function commentsChart(data, width) {
     },
     color: {
       type: 'categorical',
-      domain: Object.keys(hashtagColors),
-      range: Object.values(hashtagColors),
+      domain: Object.keys(partyColors),
+      range: Object.values(partyColors),
       legend: true
     },
     marks: [
-      Plot.lineY(chartData, {
+      Plot.lineY(chartData, Plot.windowY(rollingAverage, {
         x: 'date',
-        y: 'comments',
-        stroke: 'hashtag',  // Use hashtag instead of party for coloring
-        curve: 'basis',
+        y: 'views',
+        stroke: 'party',
         strokeWidth: 2,
+        curve: 'basis',
         tip: {
           format: {
             x: d => d.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' }),
-            y: d => d.toLocaleString()
+            y: d => Math.round(d).toLocaleString() + ` views (${rollingAverage}-day avg)`
           }
         }
-      }),
+      })),
       Plot.ruleY([0]),
       Plot.crosshairX(chartData, {
         x: 'date',
-        y: 'comments'
+        y: 'views'
       })
     ]
   })
@@ -583,17 +542,6 @@ function formatDate(timestamp) {
     month: 'short',
     day: 'numeric'
   })
-}
-
-const partyColors = {
-  SPD: '#E3000F',
-  CDU: '#000000',
-  CSU: '#0066CC',
-  'Grüne': '#46962B',
-  FDP: '#FFED00',
-  Linke: '#BE3075',
-  AfD: '#009EE0',
-  BSW: '#E64415'
 }
 
 const partyRows = Object.entries(data)

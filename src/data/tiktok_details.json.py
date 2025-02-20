@@ -132,12 +132,20 @@ def get_video_history_for_hashtag(
     Views are computed by summing the views of all videos that were posted in a given day.
     """
     videos = get_videos_for_hashtag(hashtag, n=n, verbose=verbose)
+    videos_recent = [video for video in videos if video["create_time"] >= (pd.Timestamp.now() - pd.Timedelta(days=90)).timestamp()]
+    print(hashtag, len(videos), len(videos_recent), file=sys.stderr)
     df = process_video_data(videos)
     ts = (
         df.resample("1D", on="date")
         .agg({"views": "sum", "id": "count"})
         .rename(columns={"id": "posts"})
     )
+    # print oldest and newest date to stderr
+    print(hashtag, ts.index.min(), ts.index.max(), file=sys.stderr)
+    # limit to last 90 days
+    ts = ts[ts.index >= pd.Timestamp.now() - pd.Timedelta(days=90)]
+    # exclude today
+    ts = ts[ts.index < pd.Timestamp.now()]
     return ts.reindex(pd.date_range(start=ts.index.min(), end=ts.index.max())).fillna(0)
 
 def get_comments_for_video(
@@ -280,7 +288,7 @@ def get_tiktok_party_counts() -> Dict[str, Any]:
     party_hashtags = {}
     party_accounts = {}
     party_videos = {}  # Store videos for each party
-    party_comments = {}  # Store comment history for each party
+    party_timelines = {}  # Store comment history for each party
     all_hashtags = set()
     
     # First pass: collect hashtags and account stats
@@ -290,19 +298,18 @@ def get_tiktok_party_counts() -> Dict[str, Any]:
             hashtag = party.lower().replace(" ", "")
             if party == "Linke":
                 hashtag = "dielinke"
-            comment_history = get_comment_history_for_hashtag(
+            video_history = get_video_history_for_hashtag(
                 hashtag, 
-                n_posts=40,
-                n_comments=200,
+                n=500,
                 verbose=False
             )
-            party_comments[party] = {
-                'data': comment_history,
+            party_timelines[party] = {
+                'data': video_history,
                 'hashtag': hashtag
             }
         except Exception as e:
-            print(f"Error getting comments for {party}: {e}")
-            party_comments[party] = {
+            print(f"Error getting timelines for {party}: {e}")
+            party_timelines[party] = {
                 'data': pd.DataFrame(),
                 'hashtag': ''
             }
@@ -340,24 +347,24 @@ def get_tiktok_party_counts() -> Dict[str, Any]:
         overall_stats = calculate_party_overall_stats(party_videos[party])
         
         # Add comment history to stats
-        comment_data = party_comments[party]['data']
-        hashtag = party_comments[party]['hashtag']
-        if not comment_data.empty:
+        video_data = party_timelines[party]['data']
+        hashtag = party_timelines[party]['hashtag']
+        if not video_data.empty:
             # Convert timestamps to ISO format strings before serialization
-            comment_data = comment_data.copy()
-            comment_data.index = comment_data.index.strftime('%Y-%m-%d')
+            video_data = video_data.copy()
+            video_data.index = video_data.index.strftime('%Y-%m-%d')
             # Reset index and rename the column to 'date'
-            comment_data = comment_data.reset_index().rename(columns={'index': 'date'})
-            comment_history = comment_data.to_dict(orient='records')
+            video_data = video_data.reset_index().rename(columns={'index': 'date'})
+            video_history = video_data.to_dict(orient='records')
         else:
-            comment_history = []
+            video_history = []
         
         stats[party] = {
             "videos": party_videos[party],
             "top_hashtags": top_hashtags,
             "top_accounts": top_accounts,
             "overall_stats": overall_stats,
-            "comment_history": comment_history,
+            "timeline": video_history,
             "hashtag": hashtag
         }
 
