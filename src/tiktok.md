@@ -9,16 +9,145 @@ head: <link rel="icon"
 ---
 
 <div class="header">
-  <h1>Whaleforecast 🐳 – TikTok</h1>
-  <p class="description">Most relevant TikTok videos for each German political party</p>
+  <h1>Whaleforecast 🐳 | TikTok 📱</h1>
 </div>
 
 ```js
 const data = FileAttachment('data/tiktok_details.json').json()
 ```
 
+<div class="party-list">
+  <div class="party-row">
+    <div class="party-header">
+      <h2>🔥 Hashtag Engagement</h2>
+      <p class="description">Weekly comment volume on TikTok videos with party hashtags (last 90 days)</p>
+    </div>
+    <div class="chart-container">
+      ${resize((width) => commentsChart(data, width))}
+    </div>
+  </div>
+</div>
+
 ```js
-data
+function commentsChart(data, width) {
+  // Get current date (without time) and date 90 days ago
+  const now = new Date()
+  now.setHours(0, 0, 0, 0)  // Set to start of day
+  const ninetyDaysAgo = new Date(now - 90 * 24 * 60 * 60 * 1000)
+  
+  // Debug the input data structure
+  
+  // Process comment history data for each party
+  const chartData = Object.entries(data).flatMap(([party, partyData]) => {
+    if (!partyData.comment_history || !Array.isArray(partyData.comment_history)) {
+      console.log(`No valid comment history for party ${party}`)
+      return []
+    }
+    
+    
+    return partyData.comment_history.map(record => {
+      // Ensure we have the required fields
+      const dateField = record.date || record.index  // Try both date and index fields
+      if (!dateField || !('comments' in record)) {
+        console.log(`Invalid record for ${party}:`, record)
+        return null
+      }
+      
+      const date = new Date(dateField)
+      if (isNaN(date.getTime())) {
+        console.log(`Invalid date for ${party}:`, dateField)
+        return null
+      }
+      
+      return {
+        party,
+        hashtag: '#' + partyData.hashtag,
+        date,
+        comments: Number(record.comments)
+      }
+    }).filter(record => record !== null) // Remove invalid records
+  }).filter(d => d.date >= ninetyDaysAgo && d.date < now)  // Exclude current day
+  
+  // Debug the processed data
+  
+  // If no valid data, show empty plot with message
+  if (chartData.length === 0) {
+    return Plot.plot({
+      width,
+      height: 300,
+      style: {
+        background: 'transparent',
+        fontSize: 13,
+        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+        color: '#1e293b'
+      },
+      marks: [
+        Plot.text(["No data available for the selected time period"], {
+          x: width / 2,
+          y: 150,
+          fontSize: 16,
+          fill: '#64748b',
+          textAnchor: 'middle'
+        })
+      ]
+    })
+  }
+
+  // Create a mapping of hashtags to party colors
+  const hashtagColors = Object.fromEntries(
+    Object.entries(data)
+      .filter(([_, partyData]) => partyData.hashtag)
+      .map(([party, partyData]) => ['#' + partyData.hashtag, partyColors[party]])
+  )
+
+  return Plot.plot({
+    width,
+    height: 300,
+    style: {
+      background: 'transparent',
+      fontSize: 13,
+      fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+      color: '#1e293b'
+    },
+    y: {
+      grid: true,
+      label: 'Number of Comments',
+      labelOffset: 45,
+      tickFormat: d => d.toLocaleString()
+    },
+    x: {
+      label: null,
+      labelOffset: 35,
+      tickFormat: d => d.toLocaleDateString('de-DE', { month: 'short', day: 'numeric' })
+    },
+    color: {
+      type: 'categorical',
+      domain: Object.keys(hashtagColors),
+      range: Object.values(hashtagColors),
+      legend: true
+    },
+    marks: [
+      Plot.lineY(chartData, {
+        x: 'date',
+        y: 'comments',
+        stroke: 'hashtag',  // Use hashtag instead of party for coloring
+        curve: 'basis',
+        strokeWidth: 2,
+        tip: {
+          format: {
+            x: d => d.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' }),
+            y: d => d.toLocaleString()
+          }
+        }
+      }),
+      Plot.ruleY([0]),
+      Plot.crosshairX(chartData, {
+        x: 'date',
+        y: 'comments'
+      })
+    ]
+  })
+}
 ```
 
 <style>
@@ -425,6 +554,16 @@ data
   color: #1e293b;
 }
 
+.chart-container {
+  padding: 1rem;
+  min-height: 300px;
+}
+
+.description {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0;
+}
 </style>
 
 ```js

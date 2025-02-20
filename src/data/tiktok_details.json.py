@@ -173,8 +173,12 @@ def get_comment_history_for_hashtag(
         }
     )
     
+    # Get today's date and exclude it
+    today = pd.Timestamp.now().normalize()
+    df = df[df['date'] < today]
+    
     ts = (
-        df.resample("1W", on="date")
+        df.resample("1D", on="date")
         .agg({"text": "count"})
         .rename(columns={"text": "comments"})
     )
@@ -276,10 +280,33 @@ def get_tiktok_party_counts() -> Dict[str, Any]:
     party_hashtags = {}
     party_accounts = {}
     party_videos = {}  # Store videos for each party
+    party_comments = {}  # Store comment history for each party
     all_hashtags = set()
     
     # First pass: collect hashtags and account stats
     for party, terms in tqdm(party_search_terms.items()):
+        # Get videos and comments for party hashtag
+        try:
+            hashtag = party.lower().replace(" ", "")
+            if party == "Linke":
+                hashtag = "dielinke"
+            comment_history = get_comment_history_for_hashtag(
+                hashtag, 
+                n_posts=40,
+                n_comments=200,
+                verbose=False
+            )
+            party_comments[party] = {
+                'data': comment_history,
+                'hashtag': hashtag
+            }
+        except Exception as e:
+            print(f"Error getting comments for {party}: {e}")
+            party_comments[party] = {
+                'data': pd.DataFrame(),
+                'hashtag': ''
+            }
+
         videos = get_videos_for_keywords(f"{party} partei", n=100)
         # Filter videos to only include those that mention the party or its terms
         videos = [video for video in videos if video_mentions_party(video, party, terms)]
@@ -312,15 +339,31 @@ def get_tiktok_party_counts() -> Dict[str, Any]:
         top_accounts = get_top_accounts(party_accounts[party])
         overall_stats = calculate_party_overall_stats(party_videos[party])
         
+        # Add comment history to stats
+        comment_data = party_comments[party]['data']
+        hashtag = party_comments[party]['hashtag']
+        if not comment_data.empty:
+            # Convert timestamps to ISO format strings before serialization
+            comment_data = comment_data.copy()
+            comment_data.index = comment_data.index.strftime('%Y-%m-%d')
+            # Reset index and rename the column to 'date'
+            comment_data = comment_data.reset_index().rename(columns={'index': 'date'})
+            comment_history = comment_data.to_dict(orient='records')
+        else:
+            comment_history = []
+        
         stats[party] = {
-            "videos": party_videos[party],  # Use stored videos with URLs
+            "videos": party_videos[party],
             "top_hashtags": top_hashtags,
             "top_accounts": top_accounts,
-            "overall_stats": overall_stats
+            "overall_stats": overall_stats,
+            "comment_history": comment_history,
+            "hashtag": hashtag
         }
 
     return stats
 
 if __name__ == "__main__":
     data = get_tiktok_party_counts()
-    print(json.dumps(data, indent=2))
+    # Ensure JSON serialization works by using default handler for dates
+    print(json.dumps(data, indent=2, default=str))
