@@ -65,7 +65,7 @@ def get_videos_for_keywords(
         "region": "de",  # location of the proxy server
         "count": 30,  # max: 30
         "cursor": cursor,
-        "publish_time": "0",  # 0 - ALL 1 - Past 24 hours 7 - This week 30 - This month 90 - Last 3 months 180 - Last 6 months
+        "publish_time": "90",  # 0 - ALL 1 - Past 24 hours 7 - This week 30 - This month 90 - Last 3 months 180 - Last 6 months
         "sort_type": "0",  # 0 - Relevance 1 - Like count 3 - Date posted
     }
     data = make_api_request("feed/search", query)
