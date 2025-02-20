@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Observable Framework v1.12.0">
+<title>Whaleforecast – TikTok | Walkampfmonitor</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.7fb1adac.css">
+<link rel="modulepreload" href="./_observablehq/client.9dbca896.js">
+<link rel="modulepreload" href="./_observablehq/runtime.ff688eaa.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.4d34ce26.js">
+<link rel="modulepreload" href="./_npm/htl@0.3.1/063eb405.js">
+<link rel="modulepreload" href="./_npm/@observablehq/plot@0.6.17/8d03128a.js">
+<link rel="modulepreload" href="./_npm/d3@7.9.0/7055d4c5.js">
+<link rel="modulepreload" href="./_npm/isoformat@0.2.1/c68fbd73.js">
+<link rel="modulepreload" href="./_npm/interval-tree-1d@1.0.4/a62ae5ce.js">
+<link rel="modulepreload" href="./_npm/d3-array@3.2.4/e95f898e.js">
+<link rel="modulepreload" href="./_npm/d3-axis@3.0.0/d44feff9.js">
+<link rel="modulepreload" href="./_npm/d3-brush@3.0.0/5830b12a.js">
+<link rel="modulepreload" href="./_npm/d3-chord@3.0.1/84d7b8e9.js">
+<link rel="modulepreload" href="./_npm/d3-color@3.1.0/2c0cdfa2.js">
+<link rel="modulepreload" href="./_npm/d3-contour@4.0.2/626bedc4.js">
+<link rel="modulepreload" href="./_npm/d3-delaunay@6.0.4/00c41b5d.js">
+<link rel="modulepreload" href="./_npm/d3-dispatch@3.0.1/b5f7cdc6.js">
+<link rel="modulepreload" href="./_npm/d3-drag@3.0.0/b22c5864.js">
+<link rel="modulepreload" href="./_npm/d3-dsv@3.0.1/407f7a1f.js">
+<link rel="modulepreload" href="./_npm/d3-ease@3.0.1/6f15f633.js">
+<link rel="modulepreload" href="./_npm/d3-fetch@3.0.1/ef1ec490.js">
+<link rel="modulepreload" href="./_npm/d3-force@3.0.0/5e1ff060.js">
+<link rel="modulepreload" href="./_npm/d3-format@3.1.0/5851d7ef.js">
+<link rel="modulepreload" href="./_npm/d3-geo@3.1.1/dcd02767.js">
+<link rel="modulepreload" href="./_npm/d3-hierarchy@3.1.2/f1db2593.js">
+<link rel="modulepreload" href="./_npm/d3-interpolate@3.0.1/034b7bcb.js">
+<link rel="modulepreload" href="./_npm/d3-path@3.1.0/4bb53638.js">
+<link rel="modulepreload" href="./_npm/d3-polygon@3.0.1/bbafde58.js">
+<link rel="modulepreload" href="./_npm/d3-quadtree@3.0.1/aa5b35a8.js">
+<link rel="modulepreload" href="./_npm/d3-random@3.0.1/32c7fec2.js">
+<link rel="modulepreload" href="./_npm/d3-scale@4.0.2/567840a0.js">
+<link rel="modulepreload" href="./_npm/d3-scale-chromatic@3.1.0/cf9b720b.js">
+<link rel="modulepreload" href="./_npm/d3-selection@3.0.0/5dcd62f4.js">
+<link rel="modulepreload" href="./_npm/d3-shape@3.2.0/f8e03c56.js">
+<link rel="modulepreload" href="./_npm/d3-time@3.1.0/5bc129e1.js">
+<link rel="modulepreload" href="./_npm/d3-time-format@4.1.0/19c92b44.js">
+<link rel="modulepreload" href="./_npm/d3-timer@3.0.1/f31b5398.js">
+<link rel="modulepreload" href="./_npm/d3-transition@3.0.1/8debb4ba.js">
+<link rel="modulepreload" href="./_npm/d3-zoom@3.0.0/4b0cc581.js">
+<link rel="modulepreload" href="./_npm/binary-search-bounds@2.0.5/1ee6c50d.js">
+<link rel="modulepreload" href="./_npm/internmap@2.0.3/5eed35fd.js">
+<link rel="modulepreload" href="./_npm/delaunator@5.0.1/e67acb27.js">
+<link rel="modulepreload" href="./_npm/robust-predicates@3.0.2/8ac9039b.js">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22%3E%3Ctext%20y=%22.9em%22%20font-size=%2290%22%20fill=%22black%22%3E%F0%9F%90%B3%3C/text%3E%3C/svg%3E"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"> <link rel="stylesheet" href="./_file/styles.30534236.css">
+<script type="module">
+
+import {define} from "./_observablehq/client.9dbca896.js";
+import {registerFile} from "./_observablehq/stdlib.4d34ce26.js";
+
+registerFile("./data/tiktok_details.json", {"name":"./data/tiktok_details.json","mimeType":"application/json","path":"./_file/data/tiktok_details.7ac7ca56.json","lastModified":1740012251096,"size":2963266});
+
+define({id: "a44e9412", inputs: ["FileAttachment"], outputs: ["data"], body: (FileAttachment) => {
+const data = FileAttachment("./data/tiktok_details.json").json()
+return {data};
+}});
+
+define({id: "74963044", mode: "inline", inputs: ["resize","commentsChart","data","display"], body: async (resize,commentsChart,data,display) => {
+display(await(
+resize((width) => commentsChart(data, width))
+))
+}});
+
+define({id: "82116426", inputs: ["Plot","partyColors"], outputs: ["commentsChart"], body: (Plot,partyColors) => {
+function commentsChart(data, width) {
+  // Get current date (without time) and date 90 days ago
+  const now = new Date()
+  now.setHours(0, 0, 0, 0)  // Set to start of day
+  const ninetyDaysAgo = new Date(now - 90 * 24 * 60 * 60 * 1000)
+  
+  // Debug the input data structure
+  
+  // Process comment history data for each party
+  const chartData = Object.entries(data).flatMap(([party, partyData]) => {
+    if (!partyData.comment_history || !Array.isArray(partyData.comment_history)) {
+      console.log(`No valid comment history for party ${party}`)
+      return []
+    }
+    
+    
+    return partyData.comment_history.map(record => {
+      // Ensure we have the required fields
+      const dateField = record.date || record.index  // Try both date and index fields
+      if (!dateField || !('comments' in record)) {
+        console.log(`Invalid record for ${party}:`, record)
+        return null
+      }
+      
+      const date = new Date(dateField)
+      if (isNaN(date.getTime())) {
+        console.log(`Invalid date for ${party}:`, dateField)
+        return null
+      }
+      
+      return {
+        party,
+        hashtag: '#' + partyData.hashtag,
+        date,
+        comments: Number(record.comments)
+      }
+    }).filter(record => record !== null) // Remove invalid records
+  }).filter(d => d.date >= ninetyDaysAgo && d.date < now)  // Exclude current day
+  
+  // Debug the processed data
+  
+  // If no valid data, show empty plot with message
+  if (chartData.length === 0) {
+    return Plot.plot({
+      width,
+      height: 300,
+      style: {
+        background: 'transparent',
+        fontSize: 13,
+        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+        color: '#1e293b'
+      },
+      marks: [
+        Plot.text(["No data available for the selected time period"], {
+          x: width / 2,
+          y: 150,
+          fontSize: 16,
+          fill: '#64748b',
+          textAnchor: 'middle'
+        })
+      ]
+    })
+  }
+
+  // Create a mapping of hashtags to party colors
+  const hashtagColors = Object.fromEntries(
+    Object.entries(data)
+      .filter(([_, partyData]) => partyData.hashtag)
+      .map(([party, partyData]) => ['#' + partyData.hashtag, partyColors[party]])
+  )
+
+  return Plot.plot({
+    width,
+    height: 300,
+    style: {
+      background: 'transparent',
+      fontSize: 13,
+      fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+      color: '#1e293b'
+    },
+    y: {
+      grid: true,
+      label: 'Number of Comments',
+      labelOffset: 45,
+      tickFormat: d => d.toLocaleString()
+    },
+    x: {
+      label: null,
+      labelOffset: 35,
+      tickFormat: d => d.toLocaleDateString('de-DE', { month: 'short', day: 'numeric' })
+    },
+    color: {
+      type: 'categorical',
+      domain: Object.keys(hashtagColors),
+      range: Object.values(hashtagColors),
+      legend: true
+    },
+    marks: [
+      Plot.lineY(chartData, {
+        x: 'date',
+        y: 'comments',
+        stroke: 'hashtag',  // Use hashtag instead of party for coloring
+        curve: 'basis',
+        strokeWidth: 2,
+        tip: {
+          format: {
+            x: d => d.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' }),
+            y: d => d.toLocaleString()
+          }
+        }
+      }),
+      Plot.ruleY([0]),
+      Plot.crosshairX(chartData, {
+        x: 'date',
+        y: 'comments'
+      })
+    ]
+  })
+}
+return {commentsChart};
+}});
+
+define({id: "566851b8", inputs: ["data","html","display"], outputs: ["formatNumber","formatDate","partyColors","partyRows"], body: (data,html,display) => {
+function formatNumber(num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M'
+  }
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K'
+  }
+  return num.toString()
+}
+
+function formatDate(timestamp) {
+  return new Date(timestamp * 1000).toLocaleDateString('de-DE', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  })
+}
+
+const partyColors = {
+  SPD: '#E3000F',
+  CDU: '#000000',
+  CSU: '#0066CC',
+  'Grüne': '#46962B',
+  FDP: '#FFED00',
+  Linke: '#BE3075',
+  AfD: '#009EE0',
+  BSW: '#E64415'
+}
+
+const partyRows = Object.entries(data)
+  .sort((a, b) => b[1].overall_stats.total_views - a[1].overall_stats.total_views)
+  .map(([party, partyData]) => {
+    // Calculate score thresholds for this party's hashtags
+    const scores = partyData.top_hashtags.map(h => h.score);
+    const maxScore = Math.max(...scores);
+    const highThreshold = maxScore * 0.7;
+    const mediumThreshold = maxScore * 0.3;
+
+    return html`
+      <div class="party-row">
+        <div class="party-header" style="border-left: 4px solid ${partyColors[party] || '#ccc'}">
+          <h2>${party}</h2>
+          <div class="party-overall-stats">
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_videos)}</span>
+              <span class="party-stat-label">Videos</span>
+            </div>
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_views)}</span>
+              <span class="party-stat-label">Views</span>
+            </div>
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_likes)}</span>
+              <span class="party-stat-label">Likes</span>
+            </div>
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_comments)}</span>
+              <span class="party-stat-label">Comments</span>
+            </div>
+            <div class="party-stat" title="Statistics from the last 30 days">
+              <span class="party-stat-value">${formatNumber(partyData.overall_stats.total_shares)}</span>
+              <span class="party-stat-label">Shares</span>
+            </div>
+          </div>
+        </div>
+        <div class="hashtags-section">
+          ${partyData.top_hashtags.map(hashtag => {
+            let importance = "low";
+            if (hashtag.score >= highThreshold) importance = "high";
+            else if (hashtag.score >= mediumThreshold) importance = "medium";
+            
+            return html`
+              <div class="hashtag-pill" data-importance="${importance}">
+                #${hashtag.tag}
+                <span class="hashtag-count">${formatNumber(hashtag.count)}</span>
+              </div>
+            `;
+          })}
+        </div>
+        ${partyData.top_accounts.length > 0 ? html`
+        <div class="top-accounts-section">
+          ${partyData.top_accounts.map(account => html`
+            <div class="account-card">
+              <div class="account-header">
+                <img class="account-avatar" src="${account.avatar}" alt="${account.username}">
+                <div class="account-info">
+                  <div class="account-name">${account.nickname}</div>
+                  <div class="account-username">@${account.username}</div>
+                </div>
+              </div>
+              <div class="account-stats">
+                <div class="account-stat">
+                  <span class="account-stat-label">Videos</span>
+                  <span class="account-stat-value">${account.videos}</span>
+                </div>
+                <div class="account-stat">
+                  <span class="account-stat-label">Views</span>
+                  <span class="account-stat-value">${formatNumber(account.total_plays)}</span>
+                </div>
+                <div class="account-stat">
+                  <span class="account-stat-label">Likes</span>
+                  <span class="account-stat-value">${formatNumber(account.total_likes)}</span>
+                </div>
+                <div class="account-stat">
+                  <span class="account-stat-label">Comments</span>
+                  <span class="account-stat-value">${formatNumber(account.total_comments)}</span>
+                </div>
+              </div>
+            </div>
+          `)}
+        </div>
+        ` : ''}
+        <div class="video-list">
+          ${partyData.videos.map(video => html`
+            <a class="video-card" href="${video.url}" target="_blank" rel="noopener">
+              <div class="video-thumbnail">
+                <img src="${video.origin_cover}" alt="Video thumbnail">
+              </div>
+              <div class="video-header">
+                <img class="author-avatar" src="${video.author.avatar}" alt="${video.author.unique_id}">
+                <span class="author-name">@${video.author.unique_id}</span>
+              </div>
+              <div class="video-info">
+                <div class="video-content">
+                  <div class="video-title-wrapper" onclick="event.preventDefault(); this.classList.toggle('expanded')">
+                    <div class="video-title">${video.title}</div>
+                  </div>
+                  <div class="video-stats">
+                    <div class="video-stats-row">
+                      <span class="video-stat">👁️ ${formatNumber(video.play_count)}</span>
+                      <span class="video-stat">❤️ ${formatNumber(video.digg_count)}</span>
+                      <span class="video-stat">💬 ${formatNumber(video.comment_count)}</span>
+                    </div>
+                    <div class="video-stats-row">
+                      <span class="video-stat">📅 ${formatDate(video.create_time)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          `)}
+        </div>
+      </div>
+    `
+  })
+
+display(html`<div class="party-list">${partyRows}</div>`)
+return {formatNumber,formatDate,partyColors,partyRows};
+}});
+
+</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<div class="header">
+  <h1>Whaleforecast 🐳 | TikTok 📱</h1>
+</div>
+<div class="observablehq observablehq--block"><!--:a44e9412:--></div>
+<div class="party-list">
+  <div class="party-row">
+    <div class="party-header">
+      <h2>🔥 Hashtag Engagement</h2>
+      <p class="description">Weekly comment volume on TikTok videos with party hashtags (last 90 days)</p>
+    </div>
+    <div class="chart-container">
+      <observablehq-loading></observablehq-loading><!--:74963044:-->
+    </div>
+  </div>
+</div>
+<div class="observablehq observablehq--block"><!--:82116426:--></div>
+<style>
+.party-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.party-row {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  overflow: hidden;
+}
+
+.party-header {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.party-header h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 1.5rem;
+}
+
+.party-overall-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-right: 1rem;
+}
+
+.party-stats-title {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.party-stats-grid {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.party-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.party-stat-value {
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: #1e293b;
+}
+
+.party-stat-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.video-list {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.video-list::-webkit-scrollbar {
+  height: 8px;
+}
+
+.video-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.video-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.video-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.video-card {
+  flex: 0 0 300px;
+  min-width: 300px;
+  height: 500px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.2s;
+  text-decoration: none;
+  display: block;
+}
+
+.video-card:hover {
+  transform: translateY(-2px);
+}
+
+.video-thumbnail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #f1f5f9;
+}
+
+.video-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  color: white;
+  z-index: 1;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 20%, rgba(0,0,0,0.9) 100%);
+}
+
+.video-header {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  background: rgba(0,0,0,0.5);
+  padding: 0.5rem;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.author-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.author-name {
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.video-content {
+  margin-top: 1rem;
+}
+
+.video-title-wrapper {
+  max-height: 2.5rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  position: relative;
+  padding-right: 1.5rem;
+}
+
+.video-title-wrapper::after {
+  content: '▼';
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: white;
+  font-size: 0.75rem;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.video-title-wrapper.expanded {
+  max-height: none;
+}
+
+.video-title-wrapper.expanded::after {
+  transform: rotate(180deg);
+}
+
+.video-title {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.video-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.video-stats-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.video-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.video-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #f1f5f9;
+  border-radius: 6px;
+  color: #0284c7;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.video-link:hover {
+  background: #e2e8f0;
+}
+
+.hashtags-section {
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hashtag-pill {
+  background: #f1f5f9;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.hashtag-pill[data-importance="high"] {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 600;
+  transform: scale(1.05);
+}
+
+.hashtag-pill[data-importance="medium"] {
+  background: #f1f5f9;
+  color: #0284c7;
+}
+
+.hashtag-pill[data-importance="low"] {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.hashtag-count {
+  background: #e2e8f0;
+  padding: 0.125rem 0.375rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.video-card:hover .video-info {
+  max-height: 80%;
+}
+
+.top-accounts-section {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.top-accounts-section::-webkit-scrollbar {
+  height: 8px;
+}
+
+.top-accounts-section::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.top-accounts-section::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.top-accounts-section::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.account-card {
+  flex: 0 0 180px;
+  min-width: 180px;
+  height: fit-content;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: transform 0.2s;
+  position: relative;
+}
+
+.account-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.account-header {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.account-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.account-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.account-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.account-username {
+  color: #64748b;
+  font-size: 0.7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-stats {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.375rem;
+  padding-top: 0.375rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.account-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  color: #475569;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.account-stat-label {
+  color: #64748b;
+  font-size: 0.65rem;
+}
+
+.account-stat-value {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.chart-container {
+  padding: 1rem;
+  min-height: 300px;
+}
+
+.description {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0;
+}
+</style>
+<div class="observablehq observablehq--block"><!--:566851b8:--></div>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./"><span>Walkampfmonitor</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer">Observable</a> on <a title="2025-02-20T00:36:08">Feb 20, 2025</a>.</div>
+</footer>
+</div>
